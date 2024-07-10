@@ -9,6 +9,27 @@ type LocationPointSchema struct {
 	Longitude float64 `json:"longitude"`
 }
 
+type Node struct {
+	Uuid                string               `json:"uuid,omitempty"`
+	ProjectID           string               `json:"projectId"`
+	PlantID             string               `json:"plantId,omitempty"`
+	Name                string               `json:"name"`
+	Model               string               `json:"model,omitempty"`
+	NodeTypeID          string               `json:"nodeTypeId,omitempty"`
+	SerialNumber        string               `json:"serialNumber,omitempty"`
+	Location            *LocationPointSchema `json:"location,omitempty"`
+	Metadata            interface{}          `json:"metadata"`
+	ConnectivityStatus  string               `json:"connectivityStatus"`
+	LastConnectionAt    string               `json:"lastConnectionAt"`
+	LastCommunicationAt string               `json:"lastCommunicationAt"`
+	LastDisconnectionAt string               `json:"lastDisconnectionAt"`
+	Description         string               `json:"description,omitempty"`
+	Tags                []string             `json:"tags"`
+	CreatedAt           time.Time            `json:"createdAt,omitempty"`
+	UpdatedAt           time.Time            `json:"updatedAt,omitempty"`
+	platformRef         *Platform            `json:"-"`
+}
+
 type Device struct {
 	Uuid                string               `json:"uuid,omitempty"`
 	ProjectID           string               `json:"projectId"`

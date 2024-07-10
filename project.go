@@ -19,6 +19,75 @@ type Project struct {
 	platformRef   *Platform   `json:"-"`
 }
 
+func (p Project) GetNodes() ([]Node, error) {
+	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "nodes")
+	if err != nil {
+		return nil, err
+	}
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if err := errorFromResponse(resp); err != nil {
+		return nil, err
+	}
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var nodes Response[[]Node]
+	if err := json.Unmarshal(b, &nodes); err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(nodes.Data); i++ {
+		nodes.Data[i].platformRef = p.platformRef
+	}
+
+	return nodes.Data, nil
+}
+
+func (p Project) GetNode(uuid string) (Node, error) {
+	var node Response[Node]
+
+	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "nodes", uuid)
+	if err != nil {
+		return node.Data, err
+	}
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return node.Data, err
+	}
+	defer resp.Body.Close()
+
+	if err := errorFromResponse(resp); err != nil {
+		return node.Data, err
+	}
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return node.Data, err
+	}
+
+	if err := json.Unmarshal(b, &node); err != nil {
+		return node.Data, err
+	}
+
+	node.Data.platformRef = p.platformRef
+
+	return node.Data, nil
+}
+
 func (p Project) GetDevices() ([]Device, error) {
 	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "devices")
 	if err != nil {

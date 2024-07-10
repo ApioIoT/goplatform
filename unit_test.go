@@ -13,6 +13,7 @@ var (
 	URI        string
 	API_KEY    string
 	PROJECT_ID string
+	NODE_ID    string
 	DEVICE_ID  string
 )
 
@@ -24,6 +25,7 @@ func TestMain(m *testing.M) {
 	URI = os.Getenv("URI")
 	API_KEY = os.Getenv("API_KEY")
 	PROJECT_ID = os.Getenv("PROJECT_ID")
+	NODE_ID = os.Getenv("NODE_ID")
 	DEVICE_ID = os.Getenv("DEVICE_ID")
 
 	exitVal := m.Run()
@@ -45,6 +47,35 @@ func TestGetProjects(t *testing.T) {
 func TestGetProject(t *testing.T) {
 	platform := goplatform.New(URI, API_KEY)
 	if _, err := platform.GetProject(PROJECT_ID); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGetNodes(t *testing.T) {
+	platform := goplatform.New(URI, API_KEY)
+	project, err := platform.GetProject(PROJECT_ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	nodes, err := project.GetNodes()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(nodes) == 0 {
+		t.Fail()
+	}
+}
+
+func TestGetNode(t *testing.T) {
+	platform := goplatform.New(URI, API_KEY)
+	project, err := platform.GetProject(PROJECT_ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := project.GetNode(NODE_ID); err != nil {
 		t.Fatal(err)
 	}
 }
