@@ -26,6 +26,36 @@ if err != nil {
 }
 ```
 
+#### Get Nodes
+```golang
+platform := goplatform.New(URI, API_KEY)
+
+project, err := platform.GetProject(PROJECT_ID)
+if err != nil {
+  log.Fatal(err)
+}
+
+nodes, err := project.GetNodes()
+if err != nil {
+  log.Fatal(err)
+}
+```
+
+#### Get Node
+```golang
+platform := goplatform.New(URI, API_KEY)
+
+project, err := platform.GetProject(PROJECT_ID)
+if err != nil {
+  log.Fatal(err)
+}
+
+node, err := project.GetNode(NODE_ID)
+if err != nil {
+  log.Fatal(err)
+}
+```
+
 #### Get Devices
 ```golang
 platform := goplatform.New(URI, API_KEY)
@@ -51,6 +81,36 @@ if err != nil {
 }
 
 device, err := project.GetDevice(DEVICE_ID)
+if err != nil {
+  log.Fatal(err)
+}
+```
+
+#### Get DeviceTypes
+```golang
+platform := goplatform.New(URI, API_KEY)
+
+project, err := platform.GetProject(PROJECT_ID)
+if err != nil {
+  log.Fatal(err)
+}
+
+devices, err := project.GetDeviceTypes()
+if err != nil {
+  log.Fatal(err)
+}
+```
+
+#### Get DeviceType
+```golang
+platform := goplatform.New(URI, API_KEY)
+
+project, err := platform.GetProject(PROJECT_ID)
+if err != nil {
+  log.Fatal(err)
+}
+
+deviceType, err := project.GetDeviceType(DEVICE_TYPE_ID)
 if err != nil {
   log.Fatal(err)
 }

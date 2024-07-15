@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	URI        string
-	API_KEY    string
-	PROJECT_ID string
-	NODE_ID    string
-	DEVICE_ID  string
+	URI            string
+	API_KEY        string
+	PROJECT_ID     string
+	NODE_ID        string
+	DEVICE_ID      string
+	DEVICE_TYPE_ID string
 )
 
 func TestMain(m *testing.M) {
@@ -27,6 +28,7 @@ func TestMain(m *testing.M) {
 	PROJECT_ID = os.Getenv("PROJECT_ID")
 	NODE_ID = os.Getenv("NODE_ID")
 	DEVICE_ID = os.Getenv("DEVICE_ID")
+	DEVICE_TYPE_ID = os.Getenv("DEVICE_TYPE_ID")
 
 	exitVal := m.Run()
 	os.Exit(exitVal)
@@ -105,6 +107,35 @@ func TestGetDevice(t *testing.T) {
 	}
 
 	if _, err := project.GetDevice(DEVICE_ID); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGetDeviceTypes(t *testing.T) {
+	platform := goplatform.New(URI, API_KEY)
+	project, err := platform.GetProject(PROJECT_ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	devices, err := project.GetDeviceTypes()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(devices) == 0 {
+		t.Fail()
+	}
+}
+
+func TestGetDeviceType(t *testing.T) {
+	platform := goplatform.New(URI, API_KEY)
+	project, err := platform.GetProject(PROJECT_ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := project.GetDeviceType(DEVICE_TYPE_ID); err != nil {
 		t.Fatal(err)
 	}
 }
