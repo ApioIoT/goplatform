@@ -1,6 +1,7 @@
 package goplatform
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,12 +13,14 @@ import (
 type Platform struct {
 	uri    string
 	apiKey string
+	ctx    context.Context
 }
 
-func New(uri, apiKey string) Platform {
+func New(ctx context.Context, uri, apiKey string) Platform {
 	return Platform{
 		uri:    uri,
 		apiKey: apiKey,
+		ctx:    ctx,
 	}
 }
 
@@ -27,11 +30,10 @@ func (p Platform) makeRequest(method string, body io.Reader, path ...string) (*h
 		return nil, err
 	}
 
-	req, err := http.NewRequest(strings.ToUpper(method), u, body)
+	req, err := http.NewRequestWithContext(p.ctx, strings.ToUpper(method), u, body)
 	if err != nil {
 		return nil, err
 	}
-
 	req.Header.Set("Content-Type", "application/json")
 
 	if p.apiKey != "" {

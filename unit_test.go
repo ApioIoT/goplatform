@@ -1,6 +1,7 @@
 package goplatform_test
 
 import (
+	"context"
 	"log"
 	"os"
 	"testing"
@@ -35,7 +36,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestGetProjects(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	projects, err := platform.GetProjects()
 	if err != nil {
 		t.Fatal(err)
@@ -47,14 +48,14 @@ func TestGetProjects(t *testing.T) {
 }
 
 func TestGetProject(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	if _, err := platform.GetProject(PROJECT_ID); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestGetNodes(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	project, err := platform.GetProject(PROJECT_ID)
 	if err != nil {
 		t.Fatal(err)
@@ -71,7 +72,7 @@ func TestGetNodes(t *testing.T) {
 }
 
 func TestGetNode(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	project, err := platform.GetProject(PROJECT_ID)
 	if err != nil {
 		t.Fatal(err)
@@ -83,7 +84,7 @@ func TestGetNode(t *testing.T) {
 }
 
 func TestGetDevices(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	project, err := platform.GetProject(PROJECT_ID)
 	if err != nil {
 		t.Fatal(err)
@@ -100,7 +101,7 @@ func TestGetDevices(t *testing.T) {
 }
 
 func TestGetDevice(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	project, err := platform.GetProject(PROJECT_ID)
 	if err != nil {
 		t.Fatal(err)
@@ -112,7 +113,7 @@ func TestGetDevice(t *testing.T) {
 }
 
 func TestGetDeviceTypes(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	project, err := platform.GetProject(PROJECT_ID)
 	if err != nil {
 		t.Fatal(err)
@@ -129,7 +130,7 @@ func TestGetDeviceTypes(t *testing.T) {
 }
 
 func TestGetDeviceType(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	project, err := platform.GetProject(PROJECT_ID)
 	if err != nil {
 		t.Fatal(err)
@@ -141,7 +142,7 @@ func TestGetDeviceType(t *testing.T) {
 }
 
 func TestCreateEvent(t *testing.T) {
-	platform := goplatform.New(URI, API_KEY)
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
 	project, err := platform.GetProject(PROJECT_ID)
 	if err != nil {
 		t.Fatal(err)
