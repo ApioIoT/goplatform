@@ -82,8 +82,8 @@ type DeviceType struct {
 	Category         string   `json:"category,omitempty"`
 	Name             string   `json:"name"`
 	Description      string   `json:"description,omitempty"`
-	Protocols        struct {
-		Modbus struct {
+	Protocols        *struct {
+		Modbus *struct {
 			Registers []struct {
 				Register       int    `json:"register"`
 				ModbusFunction int    `json:"modbusFunction"`
