@@ -24,7 +24,7 @@ type Node struct {
 		Description   string      `json:"description,omitempty"`
 		Metadata      interface{} `json:"metadata,omitempty"`
 		Configuration interface{} `json:"configuration,omitempty"`
-		Mapping       struct {
+		Mapping       map[string]struct {
 			Address    int      `json:"address"`
 			Properties []string `json:"properties,omitempty"`
 		} `json:"mapping"`
