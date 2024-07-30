@@ -87,7 +87,7 @@ type DeviceType struct {
 	Protocols        *struct {
 		Modbus *struct {
 			Registers []struct {
-				Register       int    `json:"register"`
+				Register       uint16 `json:"register"`
 				ModbusFunction int    `json:"modbusFunction"`
 				Words          byte   `json:"words"`
 				PropertyName   string `json:"propertyName"`
