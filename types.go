@@ -9,36 +9,38 @@ type LocationPointSchema struct {
 	Longitude float64 `json:"longitude"`
 }
 
+type NodeProtocol struct {
+	Uuid          string      `json:"uuid"`
+	Name          string      `json:"name"`
+	Description   string      `json:"description,omitempty"`
+	Metadata      interface{} `json:"metadata,omitempty"`
+	Configuration interface{} `json:"configuration,omitempty"`
+	Mapping       map[string]struct {
+		Address    int      `json:"address"`
+		Properties []string `json:"properties,omitempty"`
+	} `json:"mapping"`
+}
+
 type Node struct {
-	Uuid         string               `json:"uuid,omitempty"`
-	ProjectID    string               `json:"projectId"`
-	PlantID      string               `json:"plantId,omitempty"`
-	Name         string               `json:"name"`
-	Model        string               `json:"model,omitempty"`
-	NodeTypeID   string               `json:"nodeTypeId,omitempty"`
-	SerialNumber string               `json:"serialNumber,omitempty"`
-	Location     *LocationPointSchema `json:"location,omitempty"`
-	Protocols    []struct {
-		Uuid          string      `json:"uuid"`
-		Name          string      `json:"name"`
-		Description   string      `json:"description,omitempty"`
-		Metadata      interface{} `json:"metadata,omitempty"`
-		Configuration interface{} `json:"configuration,omitempty"`
-		Mapping       map[string]struct {
-			Address    int      `json:"address"`
-			Properties []string `json:"properties,omitempty"`
-		} `json:"mapping"`
-	} `json:"protocols,omitempty"`
-	Metadata            interface{} `json:"metadata"`
-	ConnectivityStatus  string      `json:"connectivityStatus"`
-	LastConnectionAt    string      `json:"lastConnectionAt"`
-	LastCommunicationAt string      `json:"lastCommunicationAt"`
-	LastDisconnectionAt string      `json:"lastDisconnectionAt"`
-	Description         string      `json:"description,omitempty"`
-	Tags                []string    `json:"tags"`
-	CreatedAt           time.Time   `json:"createdAt,omitempty"`
-	UpdatedAt           time.Time   `json:"updatedAt,omitempty"`
-	platformRef         *Platform   `json:"-"`
+	Uuid                string               `json:"uuid,omitempty"`
+	ProjectID           string               `json:"projectId"`
+	PlantID             string               `json:"plantId,omitempty"`
+	Name                string               `json:"name"`
+	Model               string               `json:"model,omitempty"`
+	NodeTypeID          string               `json:"nodeTypeId,omitempty"`
+	SerialNumber        string               `json:"serialNumber,omitempty"`
+	Location            *LocationPointSchema `json:"location,omitempty"`
+	Protocols           []NodeProtocol       `json:"protocols,omitempty"`
+	Metadata            interface{}          `json:"metadata"`
+	ConnectivityStatus  string               `json:"connectivityStatus"`
+	LastConnectionAt    string               `json:"lastConnectionAt"`
+	LastCommunicationAt string               `json:"lastCommunicationAt"`
+	LastDisconnectionAt string               `json:"lastDisconnectionAt"`
+	Description         string               `json:"description,omitempty"`
+	Tags                []string             `json:"tags"`
+	CreatedAt           time.Time            `json:"createdAt,omitempty"`
+	UpdatedAt           time.Time            `json:"updatedAt,omitempty"`
+	platformRef         *Platform            `json:"-"`
 }
 
 type Device struct {
