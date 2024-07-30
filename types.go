@@ -10,24 +10,35 @@ type LocationPointSchema struct {
 }
 
 type Node struct {
-	Uuid                string               `json:"uuid,omitempty"`
-	ProjectID           string               `json:"projectId"`
-	PlantID             string               `json:"plantId,omitempty"`
-	Name                string               `json:"name"`
-	Model               string               `json:"model,omitempty"`
-	NodeTypeID          string               `json:"nodeTypeId,omitempty"`
-	SerialNumber        string               `json:"serialNumber,omitempty"`
-	Location            *LocationPointSchema `json:"location,omitempty"`
-	Metadata            interface{}          `json:"metadata"`
-	ConnectivityStatus  string               `json:"connectivityStatus"`
-	LastConnectionAt    string               `json:"lastConnectionAt"`
-	LastCommunicationAt string               `json:"lastCommunicationAt"`
-	LastDisconnectionAt string               `json:"lastDisconnectionAt"`
-	Description         string               `json:"description,omitempty"`
-	Tags                []string             `json:"tags"`
-	CreatedAt           time.Time            `json:"createdAt,omitempty"`
-	UpdatedAt           time.Time            `json:"updatedAt,omitempty"`
-	platformRef         *Platform            `json:"-"`
+	Uuid         string               `json:"uuid,omitempty"`
+	ProjectID    string               `json:"projectId"`
+	PlantID      string               `json:"plantId,omitempty"`
+	Name         string               `json:"name"`
+	Model        string               `json:"model,omitempty"`
+	NodeTypeID   string               `json:"nodeTypeId,omitempty"`
+	SerialNumber string               `json:"serialNumber,omitempty"`
+	Location     *LocationPointSchema `json:"location,omitempty"`
+	Protocols    []struct {
+		Uuid          string      `json:"uuid"`
+		Name          string      `json:"name"`
+		Description   string      `json:"description,omitempty"`
+		Metadata      interface{} `json:"metadata,omitempty"`
+		Configuration interface{} `json:"configuration,omitempty"`
+		Mapping       struct {
+			Address    int      `json:"address"`
+			Properties []string `json:"properties,omitempty"`
+		} `json:"mapping"`
+	} `json:"protocols,omitempty"`
+	Metadata            interface{} `json:"metadata"`
+	ConnectivityStatus  string      `json:"connectivityStatus"`
+	LastConnectionAt    string      `json:"lastConnectionAt"`
+	LastCommunicationAt string      `json:"lastCommunicationAt"`
+	LastDisconnectionAt string      `json:"lastDisconnectionAt"`
+	Description         string      `json:"description,omitempty"`
+	Tags                []string    `json:"tags"`
+	CreatedAt           time.Time   `json:"createdAt,omitempty"`
+	UpdatedAt           time.Time   `json:"updatedAt,omitempty"`
+	platformRef         *Platform   `json:"-"`
 }
 
 type Device struct {
@@ -59,25 +70,36 @@ type Device struct {
 }
 
 type DeviceType struct {
-	Uuid             string      `json:"uuid,omitempty"`
-	ProjectID        string      `json:"projectId"`
-	Visibility       string      `json:"visibility,omitempty"`
-	Encoder          string      `json:"encoder,omitempty"`
-	Decoder          string      `json:"decoder,omitempty"`
-	FirmwareID       string      `json:"firmwareId,omitempty"`
-	FirmwareVersions []string    `json:"firmwareVersions"`
-	Model            string      `json:"model,omitempty"`
-	Manufacturer     string      `json:"manufacturer,omitempty"`
-	Category         string      `json:"category,omitempty"`
-	Name             string      `json:"name"`
-	Description      string      `json:"description,omitempty"`
-	Metadata         interface{} `json:"metadata"`
-	Commands         interface{} `json:"commands"`
-	Events           interface{} `json:"events"`
-	Properties       interface{} `json:"properties"`
-	CreatedAt        time.Time   `json:"createdAt,omitempty"`
-	UpdatedAt        time.Time   `json:"updatedAt,omitempty"`
-	platformRef      *Platform   `json:"-"`
+	Uuid             string   `json:"uuid,omitempty"`
+	ProjectID        string   `json:"projectId"`
+	Visibility       string   `json:"visibility,omitempty"`
+	Encoder          string   `json:"encoder,omitempty"`
+	Decoder          string   `json:"decoder,omitempty"`
+	FirmwareID       string   `json:"firmwareId,omitempty"`
+	FirmwareVersions []string `json:"firmwareVersions"`
+	Model            string   `json:"model,omitempty"`
+	Manufacturer     string   `json:"manufacturer,omitempty"`
+	Category         string   `json:"category,omitempty"`
+	Name             string   `json:"name"`
+	Description      string   `json:"description,omitempty"`
+	Protocols        struct {
+		Modbus struct {
+			Registers []struct {
+				Register       int    `json:"register"`
+				ModbusFunction int    `json:"modbusFunction"`
+				Words          byte   `json:"words"`
+				PropertyName   string `json:"propertyName"`
+				Type           string `json:"type"`
+			} `json:"registers"`
+		} `json:"modbus,omitempty"`
+	} `json:"protocols,omitempty"`
+	Metadata    interface{} `json:"metadata"`
+	Commands    interface{} `json:"commands"`
+	Events      interface{} `json:"events"`
+	Properties  interface{} `json:"properties"`
+	CreatedAt   time.Time   `json:"createdAt,omitempty"`
+	UpdatedAt   time.Time   `json:"updatedAt,omitempty"`
+	platformRef *Platform   `json:"-"`
 }
 
 type Event struct {
