@@ -90,8 +90,11 @@ type DeviceType struct {
 				Register       uint16 `json:"register"`
 				ModbusFunction int    `json:"modbusFunction"`
 				Words          byte   `json:"words"`
-				PropertyName   string `json:"propertyName"`
-				Type           string `json:"type"`
+				Properties     []struct {
+					Index int    `json:"index"`
+					Name  string `json:"name"`
+				} `json:"properties"`
+				Type string `json:"type"`
 			} `json:"registers"`
 		} `json:"modbus,omitempty"`
 	} `json:"protocols,omitempty"`
