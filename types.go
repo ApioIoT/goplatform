@@ -15,10 +15,10 @@ type NodeProtocol struct {
 	Description   string      `json:"description,omitempty"`
 	Metadata      interface{} `json:"metadata,omitempty"`
 	Configuration interface{} `json:"configuration,omitempty"`
-	Mapping       map[string]struct {
-		Address    int      `json:"address"`
-		Properties []string `json:"properties,omitempty"`
-	} `json:"mapping"`
+	// Mapping       map[string]struct {
+	// 	Address    int      `json:"address"`
+	// 	Properties []string `json:"properties,omitempty"`
+	// } `json:"mapping"`
 }
 
 type Node struct {
@@ -97,6 +97,13 @@ type DeviceType struct {
 				Type string `json:"type"`
 			} `json:"registers"`
 		} `json:"modbus,omitempty"`
+		Knx *struct {
+			Properties map[string]struct {
+				Address    string `json:"address"`
+				SendDPT    string `json:"sendDPT"`
+				ReceiveDPT string `json:"receiveDPT"`
+			} `json:"properties"`
+		} `json:"knx,omitempty"`
 	} `json:"protocols,omitempty"`
 	Metadata    interface{} `json:"metadata"`
 	Commands    interface{} `json:"commands"`
