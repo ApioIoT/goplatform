@@ -71,6 +71,30 @@ type Device struct {
 	platformRef         *Platform            `json:"-"`
 }
 
+type DeviceTypeModbusProtocol struct {
+	Endianness string                     `json:"endianness"`
+	Registers  []DeviceTypeModbusRegister `json:"registers"`
+}
+
+type DeviceTypeModbusRegister struct {
+	Register       uint16 `json:"register"`
+	ModbusFunction int    `json:"modbusFunction"`
+	Words          byte   `json:"words"`
+	Properties     []struct {
+		Index int    `json:"index"`
+		Name  string `json:"name"`
+	} `json:"properties"`
+	Type string `json:"type"`
+}
+
+type DeviceTypeKnxProtocol struct {
+	Properties map[string]struct {
+		Address    string `json:"address"`
+		SendDPT    string `json:"sendDPT"`
+		ReceiveDPT string `json:"receiveDPT"`
+	} `json:"properties"`
+}
+
 type DeviceType struct {
 	Uuid             string   `json:"uuid,omitempty"`
 	ProjectID        string   `json:"projectId"`
@@ -85,25 +109,8 @@ type DeviceType struct {
 	Name             string   `json:"name"`
 	Description      string   `json:"description,omitempty"`
 	Protocols        *struct {
-		Modbus *struct {
-			Registers []struct {
-				Register       uint16 `json:"register"`
-				ModbusFunction int    `json:"modbusFunction"`
-				Words          byte   `json:"words"`
-				Properties     []struct {
-					Index int    `json:"index"`
-					Name  string `json:"name"`
-				} `json:"properties"`
-				Type string `json:"type"`
-			} `json:"registers"`
-		} `json:"modbus,omitempty"`
-		Knx *struct {
-			Properties map[string]struct {
-				Address    string `json:"address"`
-				SendDPT    string `json:"sendDPT"`
-				ReceiveDPT string `json:"receiveDPT"`
-			} `json:"properties"`
-		} `json:"knx,omitempty"`
+		Modbus *DeviceTypeModbusProtocol `json:"modbus,omitempty"`
+		Knx    *DeviceTypeKnxProtocol    `json:"knx,omitempty"`
 	} `json:"protocols,omitempty"`
 	Metadata    interface{} `json:"metadata"`
 	Commands    interface{} `json:"commands"`
