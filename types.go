@@ -80,6 +80,7 @@ type DeviceTypeModbusRegister struct {
 	Register       uint16 `json:"register"`
 	ModbusFunction int    `json:"modbusFunction"`
 	Words          byte   `json:"words"`
+	BitwiseReading bool   `json:"bitwiseReading"`
 	Properties     []struct {
 		Index int    `json:"index"`
 		Name  string `json:"name"`
