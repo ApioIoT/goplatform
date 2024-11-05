@@ -77,11 +77,12 @@ type DeviceTypeModbusProtocol struct {
 }
 
 type DeviceTypeModbusRegister struct {
-	Register       uint16 `json:"register"`
-	ModbusFunction int    `json:"modbusFunction"`
-	Words          byte   `json:"words"`
-	BitwiseReading bool   `json:"bitwiseReading"`
-	Properties     []struct {
+	Register            uint16 `json:"register"`
+	ModbusFunctionRead  int    `json:"modbusFunctionRead"`
+	ModbusFunctionWrite int    `json:"modbusFunctionWrite,omitempty"`
+	Words               byte   `json:"words"`
+	BitwiseReading      bool   `json:"bitwiseReading"`
+	Properties          []struct {
 		Index int    `json:"index"`
 		Name  string `json:"name"`
 	} `json:"properties"`
