@@ -38,6 +38,7 @@ type Node struct {
 	LastDisconnectionAt string               `json:"lastDisconnectionAt"`
 	Description         string               `json:"description,omitempty"`
 	Tags                []string             `json:"tags"`
+	Rules               []string             `json:"rules,omitempty"`
 	CreatedAt           time.Time            `json:"createdAt,omitempty"`
 	UpdatedAt           time.Time            `json:"updatedAt,omitempty"`
 	platformRef         *Platform            `json:"-"`
