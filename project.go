@@ -254,3 +254,72 @@ func (p Project) CreateEvent(event Event) error {
 
 	return errorFromResponse(resp)
 }
+
+func (p Project) GetRules() ([]Rule, error) {
+	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "rules")
+	if err != nil {
+		return nil, err
+	}
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if err := errorFromResponse(resp); err != nil {
+		return nil, err
+	}
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var rules Response[[]Rule]
+	if err := json.Unmarshal(b, &rules); err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(rules.Data); i++ {
+		rules.Data[i].platformRef = p.platformRef
+	}
+
+	return rules.Data, nil
+}
+
+func (p Project) GetRule(uuid string) (Rule, error) {
+	var rule Response[Rule]
+
+	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "rules", uuid)
+	if err != nil {
+		return rule.Data, err
+	}
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return rule.Data, err
+	}
+	defer resp.Body.Close()
+
+	if err := errorFromResponse(resp); err != nil {
+		return rule.Data, err
+	}
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return rule.Data, err
+	}
+
+	if err := json.Unmarshal(b, &rule); err != nil {
+		return rule.Data, err
+	}
+
+	rule.Data.platformRef = p.platformRef
+
+	return rule.Data, nil
+}

@@ -151,3 +151,52 @@ type ResponseErrorDetail struct {
 	Message    string `json:"message,omitempty"`
 	Type       string `json:"type,omitempty"`
 }
+
+type RuleAction struct {
+	Type string `json:"type"`
+	// Type wasm
+	Label    *string `json:"label,omitempty"`
+	Language *string `json:"language,omitempty"`
+	Source   *string `json:"source,omitempty"`
+	Binary   *string `json:"binary,omitempty"`
+	Hash     *string `json:"hash,omitempty"`
+	// Type log
+	Value *string `json:"value,omitempty"`
+	// Type webhook
+	Uri     *string `json:"uri,omitempty"`
+	Payload *string `json:"payload,omitempty"`
+	// Type command
+	Command  map[string]interface{} `json:"command,omitempty"`
+	DeviceId *string                `json:"deviceId,omitempty"`
+}
+
+type RuleTrigger struct {
+	Type     string  `json:"type"`
+	DeviceId *string `json:"deviceId,omitempty"`
+	Property *string `json:"property,omitempty"`
+	Crontab  *string `json:"crontab,omitempty"`
+	Topic    *string `json:"topic,omitempty"`
+}
+
+type RuleCondition struct {
+	Devices   map[string]string `json:"devices"`
+	Condition string            `json:"condition"`
+	Deadline  *int              `json:"deadline,omitempty"`
+}
+
+type Rule struct {
+	Uuid            string         `json:"uuid"`
+	ProjectId       string         `json:"projectId"`
+	Name            string         `json:"name"`
+	Description     *string        `json:"description,omitempty"`
+	Metadata        interface{}    `json:"metadata,omitempty"`
+	Tags            []string       `json:"tags,omitempty"`
+	Status          string         `json:"status"`
+	AllowConcurrent bool           `json:"allowConcurrent"`
+	Mode            string         `json:"mode"`
+	Triggers        []RuleTrigger  `json:"triggers"`
+	Actions         []RuleAction   `json:"actions"`
+	ElseActions     []RuleAction   `json:"elseActions"`
+	Condition       *RuleCondition `json:"condition,omitempty"`
+	platformRef     *Platform      `json:"-"`
+}

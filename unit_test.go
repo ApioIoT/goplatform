@@ -17,6 +17,7 @@ var (
 	NODE_ID        string
 	DEVICE_ID      string
 	DEVICE_TYPE_ID string
+	RULE_ID        string
 )
 
 func TestMain(m *testing.M) {
@@ -30,6 +31,7 @@ func TestMain(m *testing.M) {
 	NODE_ID = os.Getenv("NODE_ID")
 	DEVICE_ID = os.Getenv("DEVICE_ID")
 	DEVICE_TYPE_ID = os.Getenv("DEVICE_TYPE_ID")
+	RULE_ID = os.Getenv("RULE_ID")
 
 	exitVal := m.Run()
 	os.Exit(exitVal)
@@ -155,6 +157,30 @@ func TestCreateEvent(t *testing.T) {
 	}
 
 	if err := project.CreateEvent(event); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGetRules(t *testing.T) {
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
+	project, err := platform.GetProject(PROJECT_ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := project.GetRules(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGetRule(t *testing.T) {
+	platform := goplatform.New(context.TODO(), URI, API_KEY)
+	project, err := platform.GetProject(PROJECT_ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := project.GetRule(RULE_ID); err != nil {
 		t.Fatal(err)
 	}
 }
