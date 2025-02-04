@@ -168,6 +168,8 @@ type RuleAction struct {
 	// Type command
 	Command  map[string]interface{} `json:"command,omitempty"`
 	DeviceId *string                `json:"deviceId,omitempty"`
+	// Type delay
+	Time *int64 `json:"time,omitempty"`
 }
 
 type RuleTrigger struct {
