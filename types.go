@@ -212,9 +212,9 @@ type Measure struct {
 	Value     float64 `json:"value"`
 }
 
-type CommandParameter []map[string]any
+type CommandParameters []map[string]any
 
-func (c *CommandParameter) UnmarshalJSON(data []byte) error {
+func (c *CommandParameters) UnmarshalJSON(data []byte) error {
 	var single map[string]any
 	if err := json.Unmarshal(data, &single); err != nil {
 		var array []map[string]any
@@ -231,17 +231,17 @@ func (c *CommandParameter) UnmarshalJSON(data []byte) error {
 }
 
 type Command struct {
-	Uuid        string           `json:"uuid"`
-	Name        string           `json:"name"`
-	Status      string           `json:"status"`
-	ProjectId   string           `json:"projectId"`
-	NodeId      *string          `json:"nodeId,omitempty"`
-	DeviceId    *string          `json:"deviceId,omitempty"`
-	Parameters  CommandParameter `json:"parameters"`
-	Metadata    map[string]any   `json:"metadata,omitempty"`
-	CreatedAt   *time.Time       `json:"createdAt,omitempty"`
-	UpdatedAt   *time.Time       `json:"updatedAt,omitempty"`
-	ReceivedAt  *time.Time       `json:"receivedAt,omitempty"`
-	CompletedAt *time.Time       `json:"completedAt,omitempty"`
-	FailedAt    *time.Time       `json:"failedAt,omitempty"`
+	Uuid        string            `json:"uuid"`
+	Name        string            `json:"name"`
+	Status      string            `json:"status"`
+	ProjectId   string            `json:"projectId"`
+	NodeId      *string           `json:"nodeId,omitempty"`
+	DeviceId    *string           `json:"deviceId,omitempty"`
+	Parameters  CommandParameters `json:"parameters"`
+	Metadata    map[string]any    `json:"metadata,omitempty"`
+	CreatedAt   *time.Time        `json:"createdAt,omitempty"`
+	UpdatedAt   *time.Time        `json:"updatedAt,omitempty"`
+	ReceivedAt  *time.Time        `json:"receivedAt,omitempty"`
+	CompletedAt *time.Time        `json:"completedAt,omitempty"`
+	FailedAt    *time.Time        `json:"failedAt,omitempty"`
 }
