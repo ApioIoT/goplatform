@@ -1,6 +1,7 @@
 package goplatform
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -201,4 +202,46 @@ type Rule struct {
 	ElseActions     []RuleAction   `json:"elseActions"`
 	Condition       *RuleCondition `json:"condition,omitempty"`
 	platformRef     *Platform      `json:"-"`
+}
+
+type Measure struct {
+	ProjectId string  `json:"projectId"`
+	DeviceId  string  `json:"deviceId"`
+	Timestamp int64   `json:"timestamp"`
+	Name      string  `json:"name"`
+	Value     float64 `json:"value"`
+}
+
+type CommandParameter []map[string]any
+
+func (c *CommandParameter) UnmarshalJSON(data []byte) error {
+	var single map[string]any
+	if err := json.Unmarshal(data, &single); err != nil {
+		var array []map[string]any
+		if err := json.Unmarshal(data, &array); err != nil {
+			return err
+		} else {
+			*c = array
+		}
+	} else {
+		*c = append(*c, single)
+	}
+
+	return nil
+}
+
+type Command struct {
+	Uuid        string           `json:"uuid"`
+	Name        string           `json:"name"`
+	Status      string           `json:"status"`
+	ProjectId   string           `json:"projectId"`
+	NodeId      *string          `json:"nodeId,omitempty"`
+	DeviceId    *string          `json:"deviceId,omitempty"`
+	Parameters  CommandParameter `json:"parameters"`
+	Metadata    map[string]any   `json:"metadata,omitempty"`
+	CreatedAt   *time.Time       `json:"createdAt,omitempty"`
+	UpdatedAt   *time.Time       `json:"updatedAt,omitempty"`
+	ReceivedAt  *time.Time       `json:"receivedAt,omitempty"`
+	CompletedAt *time.Time       `json:"completedAt,omitempty"`
+	FailedAt    *time.Time       `json:"failedAt,omitempty"`
 }
