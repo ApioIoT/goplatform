@@ -2,6 +2,7 @@ package goplatform
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 )
 
@@ -11,15 +12,11 @@ type LocationPointSchema struct {
 }
 
 type NodeProtocol struct {
-	Uuid          string      `json:"uuid"`
-	Name          string      `json:"name"`
-	Description   string      `json:"description,omitempty"`
-	Metadata      interface{} `json:"metadata,omitempty"`
-	Configuration interface{} `json:"configuration,omitempty"`
-	// Mapping       map[string]struct {
-	// 	Address    int      `json:"address"`
-	// 	Properties []string `json:"properties,omitempty"`
-	// } `json:"mapping"`
+	Uuid          string         `json:"uuid"`
+	Name          string         `json:"name"`
+	Description   string         `json:"description,omitempty"`
+	Metadata      map[string]any `json:"metadata,omitempty"`
+	Configuration any            `json:"configuration,omitempty"`
 }
 
 type Node struct {
@@ -32,7 +29,7 @@ type Node struct {
 	SerialNumber        string               `json:"serialNumber,omitempty"`
 	Location            *LocationPointSchema `json:"location,omitempty"`
 	Protocols           []NodeProtocol       `json:"protocols,omitempty"`
-	Metadata            interface{}          `json:"metadata"`
+	Metadata            map[string]any       `json:"metadata"`
 	ConnectivityStatus  string               `json:"connectivityStatus"`
 	LastConnectionAt    string               `json:"lastConnectionAt"`
 	LastCommunicationAt string               `json:"lastCommunicationAt"`
@@ -59,9 +56,9 @@ type Device struct {
 	Name                string               `json:"name"`
 	Description         string               `json:"description,omitempty"`
 	DeviceType          *DeviceType          `json:"deviceType,omitempty"`
-	Metadata            interface{}          `json:"metadata"`
-	State               interface{}          `json:"state"`
-	StateUpdatedAt      interface{}          `json:"stateUpdatedAt"`
+	Metadata            map[string]any       `json:"metadata"`
+	State               any                  `json:"state"`
+	StateUpdatedAt      any                  `json:"stateUpdatedAt"`
 	LastActivityAt      string               `json:"lastActivityAt"`
 	LastCommunicationAt string               `json:"lastCommunicationAt"`
 	ConnectivityStatus  string               `json:"connectivityStatus"`
@@ -116,24 +113,24 @@ type DeviceType struct {
 		Modbus *DeviceTypeModbusProtocol `json:"modbus,omitempty"`
 		Knx    *DeviceTypeKnxProtocol    `json:"knx,omitempty"`
 	} `json:"protocols,omitempty"`
-	Metadata    interface{} `json:"metadata"`
-	Commands    interface{} `json:"commands"`
-	Events      interface{} `json:"events"`
-	Properties  interface{} `json:"properties"`
-	CreatedAt   time.Time   `json:"createdAt,omitempty"`
-	UpdatedAt   time.Time   `json:"updatedAt,omitempty"`
-	platformRef *Platform   `json:"-"`
+	Metadata    map[string]any `json:"metadata"`
+	Commands    any            `json:"commands"`
+	Events      any            `json:"events"`
+	Properties  any            `json:"properties"`
+	CreatedAt   time.Time      `json:"createdAt,omitempty"`
+	UpdatedAt   time.Time      `json:"updatedAt,omitempty"`
+	platformRef *Platform      `json:"-"`
 }
 
 type Event struct {
-	Uuid        string      `json:"uuid,omitempty"`
-	ProjectID   string      `json:"projectId"`
-	Description string      `json:"description,omitempty"`
-	Type        string      `json:"type"`
-	EventTime   time.Time   `json:"eventTime,omitempty"`
-	Source      string      `json:"source"`
-	Metadata    interface{} `json:"metadata,omitempty"`
-	Data        interface{} `json:"data,omitempty"`
+	Uuid        string         `json:"uuid,omitempty"`
+	ProjectID   string         `json:"projectId"`
+	Description string         `json:"description,omitempty"`
+	Type        string         `json:"type"`
+	EventTime   time.Time      `json:"eventTime,omitempty"`
+	Source      string         `json:"source"`
+	Metadata    map[string]any `json:"metadata,omitempty"`
+	Data        any            `json:"data,omitempty"`
 }
 
 type Response[T any] struct {
@@ -167,8 +164,8 @@ type RuleAction struct {
 	Uri     *string `json:"uri,omitempty"`
 	Payload *string `json:"payload,omitempty"`
 	// Type command
-	Command  map[string]interface{} `json:"command,omitempty"`
-	DeviceId *string                `json:"deviceId,omitempty"`
+	Command  map[string]any `json:"command,omitempty"`
+	DeviceId *string        `json:"deviceId,omitempty"`
 	// Type delay
 	Time *int64 `json:"time,omitempty"`
 }
@@ -192,7 +189,7 @@ type Rule struct {
 	ProjectId       string         `json:"projectId"`
 	Name            string         `json:"name"`
 	Description     *string        `json:"description,omitempty"`
-	Metadata        interface{}    `json:"metadata,omitempty"`
+	Metadata        map[string]any `json:"metadata,omitempty"`
 	Tags            []string       `json:"tags,omitempty"`
 	Status          string         `json:"status"`
 	AllowConcurrent bool           `json:"allowConcurrent"`
@@ -220,9 +217,8 @@ func (c *CommandParameters) UnmarshalJSON(data []byte) error {
 		var array []map[string]any
 		if err := json.Unmarshal(data, &array); err != nil {
 			return err
-		} else {
-			*c = array
 		}
+		*c = array
 	} else {
 		*c = append(*c, single)
 	}
@@ -230,18 +226,43 @@ func (c *CommandParameters) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c CommandParameters) MarshalJSON() ([]byte, error) {
+	if len(c) == 0 {
+		return []byte("null"), nil
+	}
+
+	if len(c) == 1 {
+		b, err := json.Marshal(c[0])
+		return b, err
+	}
+
+	res := []string{}
+	for _, el := range c {
+		b, err := json.Marshal(el)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, string(b))
+	}
+	return []byte("[" + strings.Join(res, ",") + "]"), nil
+}
+
+type CommandRequest struct {
+	Name       string            `json:"name"`
+	ProjectId  string            `json:"projectId"`
+	NodeId     *string           `json:"nodeId,omitempty"`
+	DeviceId   *string           `json:"deviceId,omitempty"`
+	Parameters CommandParameters `json:"parameters"`
+	Metadata   map[string]any    `json:"metadata,omitempty"`
+}
+
 type Command struct {
-	Uuid        string            `json:"uuid"`
-	Name        string            `json:"name"`
-	Status      string            `json:"status"`
-	ProjectId   string            `json:"projectId"`
-	NodeId      *string           `json:"nodeId,omitempty"`
-	DeviceId    *string           `json:"deviceId,omitempty"`
-	Parameters  CommandParameters `json:"parameters"`
-	Metadata    map[string]any    `json:"metadata,omitempty"`
-	CreatedAt   *time.Time        `json:"createdAt,omitempty"`
-	UpdatedAt   *time.Time        `json:"updatedAt,omitempty"`
-	ReceivedAt  *time.Time        `json:"receivedAt,omitempty"`
-	CompletedAt *time.Time        `json:"completedAt,omitempty"`
-	FailedAt    *time.Time        `json:"failedAt,omitempty"`
+	CommandRequest
+	Uuid        string     `json:"uuid"`
+	Status      string     `json:"status"`
+	CreatedAt   *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+	ReceivedAt  *time.Time `json:"receivedAt,omitempty"`
+	CompletedAt *time.Time `json:"completedAt,omitempty"`
+	FailedAt    *time.Time `json:"failedAt,omitempty"`
 }

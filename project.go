@@ -9,14 +9,14 @@ import (
 )
 
 type Project struct {
-	Uuid          string      `json:"uuid"`
-	ProjectId     string      `json:"projectId"`
-	Name          string      `json:"name"`
-	Metadata      interface{} `json:"metadata,omitempty"`
-	Configuration interface{} `json:"configuration,omitempty"`
-	CreatedAt     time.Time   `json:"createdAt,omitempty"`
-	UpdatedAt     time.Time   `json:"updatedAt,omitempty"`
-	platformRef   *Platform   `json:"-"`
+	Uuid          string         `json:"uuid"`
+	ProjectId     string         `json:"projectId"`
+	Name          string         `json:"name"`
+	Metadata      map[string]any `json:"metadata,omitempty"`
+	Configuration any            `json:"configuration,omitempty"`
+	CreatedAt     time.Time      `json:"createdAt,omitempty"`
+	UpdatedAt     time.Time      `json:"updatedAt,omitempty"`
+	platformRef   *Platform      `json:"-"`
 }
 
 func (p Project) GetNodes() ([]Node, error) {
