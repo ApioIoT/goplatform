@@ -85,7 +85,8 @@ type DeviceTypeModbusRegister struct {
 		Index int    `json:"index"`
 		Name  string `json:"name"`
 	} `json:"properties"`
-	Type string `json:"type"`
+	ScaleFactor *float64 `json:"scaleFactor,omitempty"`
+	Type        string   `json:"type"`
 }
 
 type DeviceTypeKnxProtocol struct {
