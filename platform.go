@@ -2,6 +2,7 @@ package goplatform
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,20 +12,26 @@ import (
 )
 
 type Platform struct {
-	uri    string
-	apiKey string
-	ctx    context.Context
+	uri        string
+	apiKey     string
+	skipVerify bool
+	ctx        context.Context
 }
 
 func New(ctx context.Context, uri, apiKey string) Platform {
 	return Platform{
-		uri:    uri,
-		apiKey: apiKey,
-		ctx:    ctx,
+		uri:        uri,
+		apiKey:     apiKey,
+		skipVerify: false,
+		ctx:        ctx,
 	}
 }
 
-func (p Platform) makeRequest(method string, body io.Reader, path ...string) (*http.Request, error) {
+func (p *Platform) SetSkipVerify(value bool) {
+	p.skipVerify = value
+}
+
+func (p Platform) fetch(method string, body io.Reader, path ...string) ([]byte, error) {
 	u, err := url.JoinPath(p.uri, path...)
 	if err != nil {
 		return nil, err
@@ -40,16 +47,11 @@ func (p Platform) makeRequest(method string, body io.Reader, path ...string) (*h
 		req.Header.Set("Authorization", fmt.Sprintf("apiKey %s", p.apiKey))
 	}
 
-	return req, nil
-}
-
-func (p Platform) GetProjects() ([]Project, error) {
-	req, err := p.makeRequest("GET", nil, "projects")
-	if err != nil {
-		return nil, err
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: p.skipVerify},
+		},
 	}
-
-	client := &http.Client{}
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -57,11 +59,26 @@ func (p Platform) GetProjects() ([]Project, error) {
 	}
 	defer resp.Body.Close()
 
-	if err := errorFromResponse(resp); err != nil {
-		return nil, err
+	if resp.StatusCode >= 400 {
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, fmt.Errorf("goplatform: ERR0: some error on %s %s", resp.Request.Method, resp.Request.URL)
+		}
+
+		var payload ResponseError
+		if err := json.Unmarshal(b, &payload); err != nil {
+			return nil, fmt.Errorf("goplatform: ERR1: some error on %s %s", resp.Request.Method, resp.Request.URL)
+		}
+
+		return nil, fmt.Errorf("goplatform: %s %s: %s: %s", resp.Request.Method, resp.Request.URL, payload.Error.Name, payload.Error.Message)
 	}
 
 	b, err := io.ReadAll(resp.Body)
+	return b, err
+}
+
+func (p Platform) GetProjects() ([]Project, error) {
+	b, err := p.fetch("GET", nil, "projects")
 	if err != nil {
 		return nil, err
 	}

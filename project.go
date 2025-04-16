@@ -3,8 +3,6 @@ package goplatform
 import (
 	"bytes"
 	"encoding/json"
-	"io"
-	"net/http"
 	"time"
 )
 
@@ -20,24 +18,7 @@ type Project struct {
 }
 
 func (p Project) GetNodes() ([]Node, error) {
-	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "nodes")
-	if err != nil {
-		return nil, err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if err := errorFromResponse(resp); err != nil {
-		return nil, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
+	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "nodes")
 	if err != nil {
 		return nil, err
 	}
@@ -57,24 +38,7 @@ func (p Project) GetNodes() ([]Node, error) {
 func (p Project) GetNode(uuid string) (Node, error) {
 	var node Response[Node]
 
-	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "nodes", uuid)
-	if err != nil {
-		return node.Data, err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return node.Data, err
-	}
-	defer resp.Body.Close()
-
-	if err := errorFromResponse(resp); err != nil {
-		return node.Data, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
+	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "nodes", uuid)
 	if err != nil {
 		return node.Data, err
 	}
@@ -89,24 +53,7 @@ func (p Project) GetNode(uuid string) (Node, error) {
 }
 
 func (p Project) GetDevices() ([]Device, error) {
-	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "devices")
-	if err != nil {
-		return nil, err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if err := errorFromResponse(resp); err != nil {
-		return nil, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
+	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "devices")
 	if err != nil {
 		return nil, err
 	}
@@ -129,24 +76,7 @@ func (p Project) GetDevices() ([]Device, error) {
 func (p Project) GetDevice(uuid string) (Device, error) {
 	var device Response[Device]
 
-	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "devices", uuid)
-	if err != nil {
-		return device.Data, err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return device.Data, err
-	}
-	defer resp.Body.Close()
-
-	if err := errorFromResponse(resp); err != nil {
-		return device.Data, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
+	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "devices", uuid)
 	if err != nil {
 		return device.Data, err
 	}
@@ -161,24 +91,7 @@ func (p Project) GetDevice(uuid string) (Device, error) {
 }
 
 func (p Project) GetDeviceTypes() ([]DeviceType, error) {
-	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "devicetypes")
-	if err != nil {
-		return nil, err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if err := errorFromResponse(resp); err != nil {
-		return nil, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
+	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "devicetypes")
 	if err != nil {
 		return nil, err
 	}
@@ -198,24 +111,7 @@ func (p Project) GetDeviceTypes() ([]DeviceType, error) {
 func (p Project) GetDeviceType(uuid string) (DeviceType, error) {
 	var device Response[DeviceType]
 
-	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "devicetypes", uuid)
-	if err != nil {
-		return device.Data, err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return device.Data, err
-	}
-	defer resp.Body.Close()
-
-	if err := errorFromResponse(resp); err != nil {
-		return device.Data, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
+	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "devicetypes", uuid)
 	if err != nil {
 		return device.Data, err
 	}
@@ -239,41 +135,12 @@ func (p Project) CreateEvent(event Event) error {
 
 	body := bytes.NewReader(b)
 
-	req, err := p.platformRef.makeRequest("POST", body, "projects", p.Uuid, "events")
-	if err != nil {
-		return err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	return errorFromResponse(resp)
+	_, err = p.platformRef.fetch("POST", body, "projects", p.Uuid, "events")
+	return err
 }
 
 func (p Project) GetRules() ([]Rule, error) {
-	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "rules")
-	if err != nil {
-		return nil, err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if err := errorFromResponse(resp); err != nil {
-		return nil, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
+	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "rules")
 	if err != nil {
 		return nil, err
 	}
@@ -293,24 +160,7 @@ func (p Project) GetRules() ([]Rule, error) {
 func (p Project) GetRule(uuid string) (Rule, error) {
 	var rule Response[Rule]
 
-	req, err := p.platformRef.makeRequest("GET", nil, "projects", p.Uuid, "rules", uuid)
-	if err != nil {
-		return rule.Data, err
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return rule.Data, err
-	}
-	defer resp.Body.Close()
-
-	if err := errorFromResponse(resp); err != nil {
-		return rule.Data, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
+	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "rules", uuid)
 	if err != nil {
 		return rule.Data, err
 	}

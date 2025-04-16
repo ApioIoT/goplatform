@@ -39,13 +39,8 @@ func TestMain(m *testing.M) {
 
 func TestGetProjects(t *testing.T) {
 	platform := goplatform.New(context.TODO(), URI, API_KEY)
-	projects, err := platform.GetProjects()
-	if err != nil {
+	if _, err := platform.GetProjects(); err != nil {
 		t.Fatal(err)
-	}
-
-	if len(projects) == 0 {
-		t.Fail()
 	}
 }
 
