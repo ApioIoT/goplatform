@@ -203,11 +203,11 @@ type Rule struct {
 }
 
 type Measure struct {
-	ProjectId string  `json:"projectId"`
-	DeviceId  string  `json:"deviceId"`
-	Timestamp int64   `json:"timestamp"`
-	Name      string  `json:"name"`
-	Value     float64 `json:"value"`
+	ProjectId string `json:"projectId"`
+	DeviceId  string `json:"deviceId"`
+	Timestamp int64  `json:"timestamp"`
+	Name      string `json:"name"`
+	Value     any    `json:"value"`
 }
 
 type CommandParameters []map[string]any
