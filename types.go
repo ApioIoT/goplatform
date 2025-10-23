@@ -2,6 +2,7 @@ package goplatform
 
 import (
 	"encoding/json"
+	"maps"
 	"strings"
 	"time"
 )
@@ -259,13 +260,59 @@ type CommandRequest struct {
 	Metadata   map[string]any    `json:"metadata,omitempty"`
 }
 
+type CommandStatus string
+
+const (
+	Pending   CommandStatus = "pending"
+	Received  CommandStatus = "received"
+	Completed CommandStatus = "completed"
+	Failed    CommandStatus = "failed"
+)
+
 type Command struct {
 	CommandRequest
-	Uuid        string     `json:"uuid"`
-	Status      string     `json:"status"`
-	CreatedAt   *time.Time `json:"createdAt,omitempty"`
-	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
-	ReceivedAt  *time.Time `json:"receivedAt,omitempty"`
-	CompletedAt *time.Time `json:"completedAt,omitempty"`
-	FailedAt    *time.Time `json:"failedAt,omitempty"`
+	Uuid        string        `json:"uuid"`
+	Status      CommandStatus `json:"status"`
+	CreatedAt   *time.Time    `json:"createdAt,omitempty"`
+	UpdatedAt   *time.Time    `json:"updatedAt,omitempty"`
+	ReceivedAt  *time.Time    `json:"receivedAt,omitempty"`
+	CompletedAt *time.Time    `json:"completedAt,omitempty"`
+	FailedAt    *time.Time    `json:"failedAt,omitempty"`
+}
+
+type CommandAck struct {
+	Uuid   string         `json:"uuid"`
+	Status CommandStatus  `json:"status"`
+	Extras map[string]any `json:"-"`
+}
+
+func (c *CommandAck) UnmarshalJSON(data []byte) error {
+	var raw map[string]any
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+
+	if uuid, ok := raw["uuid"].(string); ok {
+		c.Uuid = uuid
+	}
+	if status, ok := raw["status"].(string); ok {
+		c.Status = CommandStatus(status)
+	}
+
+	delete(raw, "uuid")
+	delete(raw, "status")
+	c.Extras = raw
+
+	return nil
+}
+
+func (c CommandAck) MarshalJSON() ([]byte, error) {
+	data := map[string]any{
+		"uuid":   c.Uuid,
+		"status": c.Status,
+	}
+
+	maps.Copy(data, c.Extras)
+
+	return json.Marshal(data)
 }

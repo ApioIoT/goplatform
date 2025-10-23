@@ -57,7 +57,7 @@ func (p Platform) fetch(method string, body io.Reader, path ...string) ([]byte, 
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck
 
 	if resp.StatusCode >= 400 {
 		b, err := io.ReadAll(resp.Body)
