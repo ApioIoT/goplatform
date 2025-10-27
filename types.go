@@ -32,11 +32,11 @@ type Node struct {
 	Protocols    []NodeProtocol       `json:"protocols,omitempty"`
 	Metadata     map[string]any       `json:"metadata"`
 	Retry        *struct {
-		Enabled          bool `json:"enabled"`
-		MaxRetries       int  `json:"maxRetries"`
-		BackoffBase      int  `json:"backoffBase"`
-		BackoffFactor    int  `json:"backoffFactor"`
-		BackoffTimeLimit int  `json:"backoffTimeLimit"`
+		Enabled          bool    `json:"enabled"`
+		MaxRetries       int     `json:"maxRetries"`
+		BackoffBase      float64 `json:"backoffBase"`
+		BackoffFactor    float64 `json:"backoffFactor"`
+		BackoffTimeLimit int     `json:"backoffTimeLimit"`
 	} `json:"retry,omitempty"`
 	ConnectivityStatus  string    `json:"connectivityStatus"`
 	LastConnectionAt    string    `json:"lastConnectionAt"`
