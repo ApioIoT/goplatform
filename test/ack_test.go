@@ -10,7 +10,7 @@ import (
 func TestAck(t *testing.T) {
 	ack := goplatform.CommandAck{
 		Uuid:   "1234",
-		Status: "completed",
+		Status: goplatform.CMD_STATUS_COMPLETED,
 		Extras: map[string]any{
 			"extraField": "hello",
 			"count":      42,
@@ -30,7 +30,7 @@ func TestAck(t *testing.T) {
 	if postAck.Uuid != "1234" {
 		t.Fatalf("expected uuid to be '1234', got '%s'", postAck.Uuid)
 	}
-	if postAck.Status != "completed" {
+	if postAck.Status != goplatform.CMD_STATUS_COMPLETED {
 		t.Fatalf("expected status to be 'completed', got '%s'", postAck.Status)
 	}
 	if postAck.Extras["extraField"] != "hello" {

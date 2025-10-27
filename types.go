@@ -21,26 +21,33 @@ type NodeProtocol struct {
 }
 
 type Node struct {
-	Uuid                string               `json:"uuid,omitempty"`
-	ProjectID           string               `json:"projectId"`
-	PlantID             string               `json:"plantId,omitempty"`
-	Name                string               `json:"name"`
-	Model               string               `json:"model,omitempty"`
-	NodeTypeID          string               `json:"nodeTypeId,omitempty"`
-	SerialNumber        string               `json:"serialNumber,omitempty"`
-	Location            *LocationPointSchema `json:"location,omitempty"`
-	Protocols           []NodeProtocol       `json:"protocols,omitempty"`
-	Metadata            map[string]any       `json:"metadata"`
-	ConnectivityStatus  string               `json:"connectivityStatus"`
-	LastConnectionAt    string               `json:"lastConnectionAt"`
-	LastCommunicationAt string               `json:"lastCommunicationAt"`
-	LastDisconnectionAt string               `json:"lastDisconnectionAt"`
-	Description         string               `json:"description,omitempty"`
-	Tags                []string             `json:"tags"`
-	Rules               []string             `json:"rules,omitempty"`
-	CreatedAt           time.Time            `json:"createdAt,omitempty"`
-	UpdatedAt           time.Time            `json:"updatedAt,omitempty"`
-	platformRef         *Platform            `json:"-"`
+	Uuid         string               `json:"uuid,omitempty"`
+	ProjectID    string               `json:"projectId"`
+	PlantID      string               `json:"plantId,omitempty"`
+	Name         string               `json:"name"`
+	Model        string               `json:"model,omitempty"`
+	NodeTypeID   string               `json:"nodeTypeId,omitempty"`
+	SerialNumber string               `json:"serialNumber,omitempty"`
+	Location     *LocationPointSchema `json:"location,omitempty"`
+	Protocols    []NodeProtocol       `json:"protocols,omitempty"`
+	Metadata     map[string]any       `json:"metadata"`
+	Retry        *struct {
+		Enabled          bool `json:"enabled"`
+		MaxRetries       int  `json:"maxRetries"`
+		BackoffBase      int  `json:"backoffBase"`
+		BackoffFactor    int  `json:"backoffFactor"`
+		BackoffTimeLimit int  `json:"backoffTimeLimit"`
+	} `json:"retry,omitempty"`
+	ConnectivityStatus  string    `json:"connectivityStatus"`
+	LastConnectionAt    string    `json:"lastConnectionAt"`
+	LastCommunicationAt string    `json:"lastCommunicationAt"`
+	LastDisconnectionAt string    `json:"lastDisconnectionAt"`
+	Description         string    `json:"description,omitempty"`
+	Tags                []string  `json:"tags"`
+	Rules               []string  `json:"rules,omitempty"`
+	CreatedAt           time.Time `json:"createdAt,omitempty"`
+	UpdatedAt           time.Time `json:"updatedAt,omitempty"`
+	platformRef         *Platform `json:"-"`
 }
 
 type Device struct {
@@ -252,32 +259,46 @@ func (c CommandParameters) MarshalJSON() ([]byte, error) {
 }
 
 type CommandRequest struct {
-	Name       string            `json:"name"`
-	ProjectId  string            `json:"projectId"`
-	NodeId     *string           `json:"nodeId,omitempty"`
-	DeviceId   *string           `json:"deviceId,omitempty"`
-	Parameters CommandParameters `json:"parameters"`
-	Metadata   map[string]any    `json:"metadata,omitempty"`
+	Name          string            `json:"name"`
+	ProjectId     string            `json:"projectId"`
+	NodeId        *string           `json:"nodeId,omitempty"`
+	DeviceId      *string           `json:"deviceId,omitempty"`
+	Parameters    CommandParameters `json:"parameters"`
+	Metadata      map[string]any    `json:"metadata,omitempty"`
+	DownlinkRetry *struct {
+		MaxRetries *int `json:"maxRetries,omitempty"`
+	} `json:"downlinkRetry,omitempty"`
+	ExecutionRetry *struct {
+		MaxRetries *int `json:"maxRetries,omitempty"`
+	} `json:"executionRetry,omitempty"`
 }
 
 type CommandStatus string
 
 const (
-	Pending   CommandStatus = "pending"
-	Received  CommandStatus = "received"
-	Completed CommandStatus = "completed"
-	Failed    CommandStatus = "failed"
+	CMD_STATUS_PENDING   CommandStatus = "pending"
+	CMD_STATUS_RECEIVED  CommandStatus = "received"
+	CMD_STATUS_COMPLETED CommandStatus = "completed"
+	CMD_STATUS_FAILED    CommandStatus = "failed"
 )
 
 type Command struct {
 	CommandRequest
-	Uuid        string        `json:"uuid"`
-	Status      CommandStatus `json:"status"`
-	CreatedAt   *time.Time    `json:"createdAt,omitempty"`
-	UpdatedAt   *time.Time    `json:"updatedAt,omitempty"`
-	ReceivedAt  *time.Time    `json:"receivedAt,omitempty"`
-	CompletedAt *time.Time    `json:"completedAt,omitempty"`
-	FailedAt    *time.Time    `json:"failedAt,omitempty"`
+	Uuid          string        `json:"uuid"`
+	Status        CommandStatus `json:"status"`
+	DownlinkRetry *struct {
+		MaxRetries *int `json:"maxRetries"`
+		RetryCount *int `json:"retryCount"`
+	} `json:"downlinkRetry,omitempty"`
+	ExecutionRetry *struct {
+		MaxRetries *int `json:"maxRetries,omitempty"`
+		RetryCount *int `json:"retryCount,omitempty"`
+	} `json:"executionRetry,omitempty"`
+	CreatedAt   *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+	ReceivedAt  *time.Time `json:"receivedAt,omitempty"`
+	CompletedAt *time.Time `json:"completedAt,omitempty"`
+	FailedAt    *time.Time `json:"failedAt,omitempty"`
 }
 
 type CommandAck struct {
