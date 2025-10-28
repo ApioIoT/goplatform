@@ -96,40 +96,19 @@ func (p Platform) GetProjects() ([]Project, error) {
 }
 
 func (p Platform) GetProject(uuid string) (Project, error) {
-	// var project Response[Project]
+	b, err := p.fetch("GET", nil, "projects", uuid, "/")
+	if err != nil {
+		var zero Project
+		return zero, err
+	}
 
-	// req, err := p.makeRequest("GET", nil, "projects", uuid)
-	// if err != nil {
-	// 	return project.Data, err
-	// }
+	var project Response[Project]
+	if err := json.Unmarshal(b, &project); err != nil {
+		var zero Project
+		return zero, err
+	}
 
-	// client := &http.Client{}
+	project.Data.platformRef = &p
 
-	// resp, err := client.Do(req)
-	// if err != nil {
-	// 	return project.Data, err
-	// }
-	// defer resp.Body.Close()
-
-	// if err := errorFromResponse(resp); err != nil {
-	// 	return project.Data, err
-	// }
-
-	// b, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return project.Data, err
-	// }
-
-	// if err := json.Unmarshal(b, &project); err != nil {
-	// 	return project.Data, err
-	// }
-
-	// project.Data.platformRef = &p
-
-	// return project.Data, nil
-
-	return Project{
-		platformRef: &p,
-		Uuid:        uuid,
-	}, nil
+	return project.Data, nil
 }
