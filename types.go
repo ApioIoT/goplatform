@@ -5,6 +5,8 @@ import (
 	"maps"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type LocationPointSchema struct {
@@ -220,12 +222,100 @@ type Measure struct {
 	Value     any    `json:"value"`
 }
 
-type CommandParameters []map[string]any
+type CommandStatus string
+
+const (
+	CMD_STATUS_PENDING   CommandStatus = "pending"
+	CMD_STATUS_RECEIVED  CommandStatus = "received"
+	CMD_STATUS_COMPLETED CommandStatus = "completed"
+	CMD_STATUS_FAILED    CommandStatus = "failed"
+)
+
+type CommandRequest struct {
+	Name           string                     `json:"name"`
+	ProjectId      string                     `json:"projectId"`
+	NodeId         *string                    `json:"nodeId,omitempty"`
+	DeviceId       *string                    `json:"deviceId,omitempty"`
+	Parameters     CommandParameters          `json:"parameters"`
+	Metadata       map[string]any             `json:"metadata,omitempty"`
+	DownlinkRetry  *CommandRequestRetryOption `json:"downlinkRetry,omitempty"`
+	ExecutionRetry *CommandRequestRetryOption `json:"executionRetry,omitempty"`
+}
+
+func (c CommandRequest) MakeCommand(status CommandStatus) Command {
+	now := time.Now()
+
+	cmd := Command{
+		Uuid:       uuid.NewString(),
+		Name:       c.Name,
+		ProjectId:  c.ProjectId,
+		NodeId:     c.NodeId,
+		DeviceId:   c.DeviceId,
+		Parameters: c.Parameters,
+		Metadata:   c.Metadata,
+		Status:     status,
+		CreatedAt:  &now,
+	}
+
+	if c.DownlinkRetry != nil {
+		cmd.DownlinkRetry = &CommandRetryOption{
+			MaxRetries: c.DownlinkRetry.MaxRetries,
+		}
+	}
+	if c.ExecutionRetry != nil {
+		cmd.ExecutionRetry = &CommandRetryOption{
+			MaxRetries: c.ExecutionRetry.MaxRetries,
+		}
+	}
+
+	switch status {
+	case CMD_STATUS_PENDING:
+		// Intentionally empty
+	case CMD_STATUS_RECEIVED:
+		cmd.ReceivedAt = &now
+	case CMD_STATUS_COMPLETED:
+		cmd.CompletedAt = &now
+	case CMD_STATUS_FAILED:
+		cmd.FailedAt = &now
+	}
+
+	return cmd
+}
+
+type CommandRequestRetryOption struct {
+	MaxRetries *int `json:"maxRetries,omitempty"`
+}
+
+type Command struct {
+	Uuid           string              `json:"uuid"`
+	Name           string              `json:"name"`
+	ProjectId      string              `json:"projectId"`
+	NodeId         *string             `json:"nodeId,omitempty"`
+	DeviceId       *string             `json:"deviceId,omitempty"`
+	Parameters     CommandParameters   `json:"parameters"`
+	Metadata       map[string]any      `json:"metadata,omitempty"`
+	Status         CommandStatus       `json:"status"`
+	DownlinkRetry  *CommandRetryOption `json:"downlinkRetry,omitempty"`
+	ExecutionRetry *CommandRetryOption `json:"executionRetry,omitempty"`
+	CreatedAt      *time.Time          `json:"createdAt,omitempty"`
+	UpdatedAt      *time.Time          `json:"updatedAt,omitempty"`
+	ReceivedAt     *time.Time          `json:"receivedAt,omitempty"`
+	CompletedAt    *time.Time          `json:"completedAt,omitempty"`
+	FailedAt       *time.Time          `json:"failedAt,omitempty"`
+}
+
+type CommandRetryOption struct {
+	MaxRetries *int `json:"maxRetries,omitempty"`
+	RetryCount *int `json:"retryCount,omitempty"`
+}
+
+type CommandParameter map[string]any
+type CommandParameters []CommandParameter
 
 func (c *CommandParameters) UnmarshalJSON(data []byte) error {
-	var single map[string]any
+	var single CommandParameter
 	if err := json.Unmarshal(data, &single); err != nil {
-		var array []map[string]any
+		var array []CommandParameter
 		if err := json.Unmarshal(data, &array); err != nil {
 			return err
 		}
@@ -256,49 +346,6 @@ func (c CommandParameters) MarshalJSON() ([]byte, error) {
 		res = append(res, string(b))
 	}
 	return []byte("[" + strings.Join(res, ",") + "]"), nil
-}
-
-type CommandRequest struct {
-	Name          string            `json:"name"`
-	ProjectId     string            `json:"projectId"`
-	NodeId        *string           `json:"nodeId,omitempty"`
-	DeviceId      *string           `json:"deviceId,omitempty"`
-	Parameters    CommandParameters `json:"parameters"`
-	Metadata      map[string]any    `json:"metadata,omitempty"`
-	DownlinkRetry *struct {
-		MaxRetries *int `json:"maxRetries,omitempty"`
-	} `json:"downlinkRetry,omitempty"`
-	ExecutionRetry *struct {
-		MaxRetries *int `json:"maxRetries,omitempty"`
-	} `json:"executionRetry,omitempty"`
-}
-
-type CommandStatus string
-
-const (
-	CMD_STATUS_PENDING   CommandStatus = "pending"
-	CMD_STATUS_RECEIVED  CommandStatus = "received"
-	CMD_STATUS_COMPLETED CommandStatus = "completed"
-	CMD_STATUS_FAILED    CommandStatus = "failed"
-)
-
-type Command struct {
-	CommandRequest
-	Uuid          string        `json:"uuid"`
-	Status        CommandStatus `json:"status"`
-	DownlinkRetry *struct {
-		MaxRetries *int `json:"maxRetries"`
-		RetryCount *int `json:"retryCount"`
-	} `json:"downlinkRetry,omitempty"`
-	ExecutionRetry *struct {
-		MaxRetries *int `json:"maxRetries,omitempty"`
-		RetryCount *int `json:"retryCount,omitempty"`
-	} `json:"executionRetry,omitempty"`
-	CreatedAt   *time.Time `json:"createdAt,omitempty"`
-	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
-	ReceivedAt  *time.Time `json:"receivedAt,omitempty"`
-	CompletedAt *time.Time `json:"completedAt,omitempty"`
-	FailedAt    *time.Time `json:"failedAt,omitempty"`
 }
 
 type CommandAck struct {
