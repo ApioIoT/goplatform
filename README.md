@@ -8,121 +8,121 @@ go get github.com/ApioIoT/goplatform
 
 #### Get Projects
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 projects, err := platform.GetProjects()
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
 
 #### Get Project
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 project, err := platform.GetProject(PROJECT_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
 
 #### Get Nodes
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 project, err := platform.GetProject(PROJECT_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 
 nodes, err := project.GetNodes()
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
 
 #### Get Node
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 project, err := platform.GetProject(PROJECT_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 
 node, err := project.GetNode(NODE_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
 
 #### Get Devices
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 project, err := platform.GetProject(PROJECT_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 
 devices, err := project.GetDevices()
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
 
 #### Get Device
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 project, err := platform.GetProject(PROJECT_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 
 device, err := project.GetDevice(DEVICE_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
 
 #### Get DeviceTypes
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 project, err := platform.GetProject(PROJECT_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 
 devices, err := project.GetDeviceTypes()
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
 
 #### Get DeviceType
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 project, err := platform.GetProject(PROJECT_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 
 deviceType, err := project.GetDeviceType(DEVICE_TYPE_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
 
 #### Create Event
 ```golang
-platform := goplatform.New(URI, API_KEY)
+platform := goplatform.New(context.TODO(), URI, API_KEY)
 
 project, err := platform.GetProject(PROJECT_ID)
 if err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 
 event := goplatform.Event{
@@ -132,6 +132,6 @@ event := goplatform.Event{
 }
 
 if err := project.CreateEvent(event); err != nil {
-  log.Fatal(err)
+  panic(err)
 }
 ```
