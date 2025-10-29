@@ -7,18 +7,18 @@ import (
 )
 
 type Project struct {
-	Uuid          string         `json:"uuid"`
-	ProjectId     string         `json:"projectId"`
-	Name          string         `json:"name"`
-	Metadata      map[string]any `json:"metadata,omitempty"`
-	Configuration any            `json:"configuration,omitempty"`
-	CreatedAt     time.Time      `json:"createdAt,omitempty"`
-	UpdatedAt     time.Time      `json:"updatedAt,omitempty"`
-	platformRef   *Platform      `json:"-"`
+	Uuid        string         `json:"uuid"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Metadata    map[string]any `json:"metadata,omitempty"`
+	Features    []any          `json:"features"`
+	CreatedAt   time.Time      `json:"createdAt,omitempty"`
+	UpdatedAt   time.Time      `json:"updatedAt,omitempty"`
+	platformRef *Platform      `json:"-"`
 }
 
 func (p Project) GetNodes() ([]Node, error) {
-	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "nodes")
+	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "nodes")
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (p Project) GetNodes() ([]Node, error) {
 func (p Project) GetNode(uuid string) (Node, error) {
 	var node Response[Node]
 
-	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "nodes", uuid)
+	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "nodes", uuid)
 	if err != nil {
 		return node.Data, err
 	}
@@ -53,7 +53,7 @@ func (p Project) GetNode(uuid string) (Node, error) {
 }
 
 func (p Project) GetDevices() ([]Device, error) {
-	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "devices")
+	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "devices")
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (p Project) GetDevices() ([]Device, error) {
 func (p Project) GetDevice(uuid string) (Device, error) {
 	var device Response[Device]
 
-	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "devices", uuid)
+	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "devices", uuid)
 	if err != nil {
 		return device.Data, err
 	}
@@ -91,7 +91,7 @@ func (p Project) GetDevice(uuid string) (Device, error) {
 }
 
 func (p Project) GetDeviceTypes() ([]DeviceType, error) {
-	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "devicetypes")
+	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "devicetypes")
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (p Project) GetDeviceTypes() ([]DeviceType, error) {
 func (p Project) GetDeviceType(uuid string) (DeviceType, error) {
 	var device Response[DeviceType]
 
-	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "devicetypes", uuid)
+	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "devicetypes", uuid)
 	if err != nil {
 		return device.Data, err
 	}
@@ -126,7 +126,7 @@ func (p Project) GetDeviceType(uuid string) (DeviceType, error) {
 }
 
 func (p Project) CreateEvent(event Event) error {
-	event.ProjectID = p.ProjectId
+	event.ProjectID = p.Uuid
 
 	b, err := json.Marshal(event)
 	if err != nil {
@@ -135,12 +135,12 @@ func (p Project) CreateEvent(event Event) error {
 
 	body := bytes.NewReader(b)
 
-	_, err = p.platformRef.fetch("POST", body, "projects", p.Uuid, "events")
+	_, err = p.platformRef.fetch(httpPost, body, "projects", p.Uuid, "events")
 	return err
 }
 
 func (p Project) GetRules() ([]Rule, error) {
-	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "rules")
+	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "rules")
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +160,7 @@ func (p Project) GetRules() ([]Rule, error) {
 func (p Project) GetRule(uuid string) (Rule, error) {
 	var rule Response[Rule]
 
-	b, err := p.platformRef.fetch("GET", nil, "projects", p.Uuid, "rules", uuid)
+	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "rules", uuid)
 	if err != nil {
 		return rule.Data, err
 	}

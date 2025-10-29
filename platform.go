@@ -9,6 +9,17 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/h2non/gock"
+)
+
+type httpMethod string
+
+const (
+	httpGet    httpMethod = "GET"
+	httpPost   httpMethod = "POST"
+	httpPut    httpMethod = "PUT"
+	httpDelete httpMethod = "DELETE"
 )
 
 type Platform struct {
@@ -31,13 +42,13 @@ func (p *Platform) SetSkipVerify(value bool) {
 	p.skipVerify = value
 }
 
-func (p Platform) fetch(method string, body io.Reader, path ...string) ([]byte, error) {
+func (p Platform) fetch(method httpMethod, body io.Reader, path ...string) ([]byte, error) {
 	u, err := url.JoinPath(p.uri, path...)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(p.ctx, strings.ToUpper(method), u, body)
+	req, err := http.NewRequestWithContext(p.ctx, strings.ToUpper(string(method)), u, body)
 	if err != nil {
 		return nil, err
 	}
@@ -52,6 +63,7 @@ func (p Platform) fetch(method string, body io.Reader, path ...string) ([]byte, 
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: p.skipVerify},
 		},
 	}
+	gock.InterceptClient(client) // For test
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -78,7 +90,7 @@ func (p Platform) fetch(method string, body io.Reader, path ...string) ([]byte, 
 }
 
 func (p Platform) GetProjects() ([]Project, error) {
-	b, err := p.fetch("GET", nil, "projects")
+	b, err := p.fetch(httpGet, nil, "projects")
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +108,7 @@ func (p Platform) GetProjects() ([]Project, error) {
 }
 
 func (p Platform) GetProject(uuid string) (Project, error) {
-	b, err := p.fetch("GET", nil, "projects", uuid, "/")
+	b, err := p.fetch(httpGet, nil, "projects", uuid, "/")
 	if err != nil {
 		var zero Project
 		return zero, err
