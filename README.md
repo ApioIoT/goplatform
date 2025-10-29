@@ -1,3 +1,7 @@
+![Golang version](https://img.shields.io/badge/go-1.23-brightgreen)
+![License](https://img.shields.io/github/license/ApioIoT/goplatform)
+![CI](https://github.com/ApioIoT/goplatform/actions/workflows/ci.yml/badge.svg)
+
 ## GoPlatform
 An SDK for [Apio Platform](https://gitlab.com/apio-private/platform/api) in Golang.
 
