@@ -200,91 +200,96 @@ func TestUnit(t *testing.T) {
 
 	// --- TESTS
 
-	t.Run("Authentication Errors", func(t *testing.T) {
-		t.Run("Invalid API Key", func(t *testing.T) {
-			platform := goplatform.New(context.Background(), API_URI, "invalid-api-key")
-			_, err := platform.GetProjects()
-			if err == nil {
-				t.Fatal("expected error with invalid API key")
-			}
-		})
-
-		t.Run("Empty API Key", func(t *testing.T) {
-			platform := goplatform.New(context.Background(), API_URI, "")
-			_, err := platform.GetProjects()
-			if err == nil {
-				t.Fatal("expected error with empty API key")
-			}
-		})
+	t.Run("Invalid API Key", func(t *testing.T) {
+		platform := goplatform.New(context.Background(), API_URI, "invalid-api-key")
+		_, err := platform.GetProjects()
+		if err == nil {
+			t.Fatal("expected error with invalid API key")
+		}
 	})
 
-	t.Run("Non-existent Resources", func(t *testing.T) {
+	t.Run("Empty API Key", func(t *testing.T) {
+		platform := goplatform.New(context.Background(), API_URI, "")
+		_, err := platform.GetProjects()
+		if err == nil {
+			t.Fatal("expected error with empty API key")
+		}
+	})
+
+	t.Run("Non-existent Project", func(t *testing.T) {
 		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		_, err := platform.GetProject("non-existent-project")
+		if err == nil {
+			t.Fatal("expected error for non-existent project")
+		}
+	})
 
-		t.Run("Non-existent Project", func(t *testing.T) {
-			_, err := platform.GetProject("non-existent-project")
-			if err == nil {
-				t.Fatal("expected error for non-existent project")
-			}
-		})
-
+	t.Run("Non-existent Node", func(t *testing.T) {
+		platform := goplatform.New(context.Background(), API_URI, API_KEY)
 		project, err := platform.GetProject(PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		t.Run("Non-existent Node", func(t *testing.T) {
-			_, err := project.GetNode("non-existent-node")
-			if err == nil {
-				t.Fatal("expected error for non-existent node")
-			}
-		})
-
-		t.Run("Non-existent Device", func(t *testing.T) {
-			_, err := project.GetDevice("non-existent-device")
-			if err == nil {
-				t.Fatal("expected error for non-existent device")
-			}
-		})
-
-		t.Run("Non-existent DeviceType", func(t *testing.T) {
-			_, err := project.GetDeviceType("non-existent-devicetype")
-			if err == nil {
-				t.Fatal("expected error for non-existent device type")
-			}
-		})
-
-		t.Run("Non-existent Rule", func(t *testing.T) {
-			_, err := project.GetRule("non-existent-rule")
-			if err == nil {
-				t.Fatal("expected error for non-existent rule")
-			}
-		})
+		_, err = project.GetNode("non-existent-node")
+		if err == nil {
+			t.Fatal("expected error for non-existent node")
+		}
 	})
 
-	t.Run("Context and Timeout Handling", func(t *testing.T) {
-		t.Run("Context Cancellation", func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			platform := goplatform.New(ctx, API_URI, API_KEY)
+	t.Run("Non-existent Device", func(t *testing.T) {
+		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		project, err := platform.GetProject(PROJECT_ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = project.GetDevice("non-existent-device")
+		if err == nil {
+			t.Fatal("expected error for non-existent device")
+		}
+	})
 
-			cancel()
+	t.Run("Non-existent DeviceType", func(t *testing.T) {
+		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		project, err := platform.GetProject(PROJECT_ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = project.GetDeviceType("non-existent-devicetype")
+		if err == nil {
+			t.Fatal("expected error for non-existent device type")
+		}
+	})
 
-			_, err := platform.GetProjects()
-			if err == nil {
-				t.Fatal("expected error due to cancelled context")
-			}
-		})
+	t.Run("Non-existent Rule", func(t *testing.T) {
+		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		project, err := platform.GetProject(PROJECT_ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = project.GetRule("non-existent-rule")
+		if err == nil {
+			t.Fatal("expected error for non-existent rule")
+		}
+	})
 
-		t.Run("Context Timeout", func(t *testing.T) {
-			ctx, cancel := context.WithTimeout(context.Background(), 1*time.Nanosecond)
-			defer cancel()
+	t.Run("Context Cancellation", func(t *testing.T) {
+		ctx, cancel := context.WithCancel(context.Background())
+		platform := goplatform.New(ctx, API_URI, API_KEY)
+		cancel()
+		_, err := platform.GetProjects()
+		if err == nil {
+			t.Fatal("expected error due to cancelled context")
+		}
+	})
 
-			platform := goplatform.New(ctx, API_URI, API_KEY)
-			_, err := platform.GetProjects()
-			if err == nil {
-				t.Fatal("expected error due to context timeout")
-			}
-		})
+	t.Run("Context Timeout", func(t *testing.T) {
+		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Nanosecond)
+		defer cancel()
+		platform := goplatform.New(ctx, API_URI, API_KEY)
+		_, err := platform.GetProjects()
+		if err == nil {
+			t.Fatal("expected error due to context timeout")
+		}
 	})
 
 	t.Run("GetProjects", func(t *testing.T) {
