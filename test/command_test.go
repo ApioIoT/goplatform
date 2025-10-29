@@ -367,4 +367,47 @@ func TestCommand(t *testing.T) {
 			t.Fatal("expected error when unmarshaling invalid JSON")
 		}
 	})
+
+	t.Run("CommandParameters Marshal single parameter", func(t *testing.T) {
+		params := goplatform.CommandParameters{
+			goplatform.CommandParameter{
+				"address": 1,
+				"value":   42,
+			},
+		}
+		b, err := json.Marshal(params)
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Deve essere un oggetto JSON, non un array
+		if string(b) != `{"address":1,"value":42}` {
+			t.Fatalf("expected JSON object, got %s", string(b))
+		}
+	})
+
+	t.Run("CommandParameters Marshal multiple parameters", func(t *testing.T) {
+		params := goplatform.CommandParameters{
+			goplatform.CommandParameter{"address": 1, "value": 42},
+			goplatform.CommandParameter{"address": 2, "value": 84},
+		}
+		b, err := json.Marshal(params)
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Deve essere un array JSON
+		if string(b) != `[{"address":1,"value":42},{"address":2,"value":84}]` {
+			t.Fatalf("expected JSON array, got %s", string(b))
+		}
+	})
+
+	t.Run("CommandParameters Marshal empty", func(t *testing.T) {
+		params := goplatform.CommandParameters{}
+		b, err := json.Marshal(params)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(b) != "null" {
+			t.Fatalf("expected null, got %s", string(b))
+		}
+	})
 }

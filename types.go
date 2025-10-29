@@ -333,8 +333,7 @@ func (c CommandParameters) MarshalJSON() ([]byte, error) {
 	}
 
 	if len(c) == 1 {
-		b, err := json.Marshal(c[0])
-		return b, err
+		return json.Marshal(c[0])
 	}
 
 	res := []string{}
