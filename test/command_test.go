@@ -7,14 +7,6 @@ import (
 	"github.com/ApioIoT/goplatform"
 )
 
-func stringPtr(s string) *string {
-	return &s
-}
-
-func intPtr(s int) *int {
-	return &s
-}
-
 func TestCommand(t *testing.T) {
 	t.Run("Ack", func(t *testing.T) {
 		ack := goplatform.CommandAck{
@@ -51,20 +43,24 @@ func TestCommand(t *testing.T) {
 	})
 
 	t.Run("MakeCommand", func(t *testing.T) {
+		deviceId := "my-device-id"
+		downlinkMaxRetris := 120
+		executionMaxRetris := 10
+
 		req := goplatform.CommandRequest{
 			Name:      "Sample",
 			ProjectId: "my-project-id",
-			DeviceId:  stringPtr("my-node-id"),
+			DeviceId:  &deviceId,
 			Parameters: goplatform.CommandParameters{
 				goplatform.CommandParameter{
 					"address": 1,
 				},
 			},
 			DownlinkRetry: &goplatform.CommandRequestRetryOption{
-				MaxRetries: intPtr(120),
+				MaxRetries: &downlinkMaxRetris,
 			},
 			ExecutionRetry: &goplatform.CommandRequestRetryOption{
-				MaxRetries: intPtr(10),
+				MaxRetries: &executionMaxRetris,
 			},
 		}
 
