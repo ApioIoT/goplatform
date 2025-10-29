@@ -302,9 +302,12 @@ func TestUnit(t *testing.T) {
 
 	t.Run("GetProject", func(t *testing.T) {
 		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-
-		if _, err := platform.GetProject(PROJECT_ID); err != nil {
+		project, err := platform.GetProject(PROJECT_ID)
+		if err != nil {
 			t.Fatal(err)
+		}
+		if project.Uuid != PROJECT_ID {
+			t.Fatalf("expected project Uuid to be '%s', got '%s'", PROJECT_ID, project.Uuid)
 		}
 	})
 
@@ -328,14 +331,16 @@ func TestUnit(t *testing.T) {
 
 	t.Run("GetNode", func(t *testing.T) {
 		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-
 		project, err := platform.GetProject(PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		if _, err := project.GetNode(NODE_ID); err != nil {
+		node, err := project.GetNode(NODE_ID)
+		if err != nil {
 			t.Fatal(err)
+		}
+		if node.Uuid != NODE_ID {
+			t.Fatalf("expected node Uuid to be '%s', got '%s'", NODE_ID, node.Uuid)
 		}
 	})
 
@@ -359,14 +364,16 @@ func TestUnit(t *testing.T) {
 
 	t.Run("GetDevice", func(t *testing.T) {
 		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-
 		project, err := platform.GetProject(PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		if _, err := project.GetDevice(DEVICE_ID); err != nil {
+		device, err := project.GetDevice(DEVICE_ID)
+		if err != nil {
 			t.Fatal(err)
+		}
+		if device.Uuid != DEVICE_ID {
+			t.Fatalf("expected device Uuid to be '%s', got '%s'", DEVICE_ID, device.Uuid)
 		}
 	})
 
@@ -390,14 +397,16 @@ func TestUnit(t *testing.T) {
 
 	t.Run("GetDeviceType", func(t *testing.T) {
 		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-
 		project, err := platform.GetProject(PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		if _, err := project.GetDeviceType(DEVICE_TYPE_ID); err != nil {
+		devicetype, err := project.GetDeviceType(DEVICE_TYPE_ID)
+		if err != nil {
 			t.Fatal(err)
+		}
+		if devicetype.Uuid != DEVICE_TYPE_ID {
+			t.Fatalf("expected deviceType Uuid to be '%s', got '%s'", DEVICE_TYPE_ID, devicetype.Uuid)
 		}
 	})
 
@@ -435,19 +444,16 @@ func TestUnit(t *testing.T) {
 
 	t.Run("GetRule", func(t *testing.T) {
 		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-
 		project, err := platform.GetProject(PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-
 		rule, err := project.GetRule(RULE_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-
 		if rule.Uuid != RULE_ID {
-			t.Fatal("Invalid rule Uuid")
+			t.Fatalf("expected rule Uuid to be '%s', got '%s'", RULE_ID, rule.Uuid)
 		}
 	})
 }
