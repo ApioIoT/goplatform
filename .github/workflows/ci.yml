@@ -1,19 +1,15 @@
-name: Test
+name: CI
 
 on:
   push:
-    tags: [ "v*.*.*" ]
-  pull_request:
-    branches: [ "**" ]
+    tags: 
+      - v*.*.*"
+      - "v*.*.*-*"
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-    container:
-      image: golang:1.23-alpine
-
     continue-on-error: true
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
