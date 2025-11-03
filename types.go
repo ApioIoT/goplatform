@@ -258,12 +258,12 @@ func (c CommandRequest) MakeCommand(status CommandStatus) Command {
 	}
 
 	if c.DownlinkRetry != nil {
-		cmd.DownlinkRetry = &CommandRetryOption{
+		cmd.DownlinkRetry = &DownlinkRetryOption{
 			MaxRetries: c.DownlinkRetry.MaxRetries,
 		}
 	}
 	if c.ExecutionRetry != nil {
-		cmd.ExecutionRetry = &CommandRetryOption{
+		cmd.ExecutionRetry = &ExecutionRetryOption{
 			MaxRetries: c.ExecutionRetry.MaxRetries,
 		}
 	}
@@ -287,24 +287,30 @@ type CommandRequestRetryOption struct {
 }
 
 type Command struct {
-	Uuid           string              `json:"uuid"`
-	Name           string              `json:"name"`
-	ProjectId      string              `json:"projectId"`
-	NodeId         *string             `json:"nodeId,omitempty"`
-	DeviceId       *string             `json:"deviceId,omitempty"`
-	Parameters     CommandParameters   `json:"parameters"`
-	Metadata       map[string]any      `json:"metadata,omitempty"`
-	Status         CommandStatus       `json:"status"`
-	DownlinkRetry  *CommandRetryOption `json:"downlinkRetry,omitempty"`
-	ExecutionRetry *CommandRetryOption `json:"executionRetry,omitempty"`
-	CreatedAt      *time.Time          `json:"createdAt,omitempty"`
-	UpdatedAt      *time.Time          `json:"updatedAt,omitempty"`
-	ReceivedAt     *time.Time          `json:"receivedAt,omitempty"`
-	CompletedAt    *time.Time          `json:"completedAt,omitempty"`
-	FailedAt       *time.Time          `json:"failedAt,omitempty"`
+	Uuid           string                `json:"uuid"`
+	Name           string                `json:"name"`
+	ProjectId      string                `json:"projectId"`
+	NodeId         *string               `json:"nodeId,omitempty"`
+	DeviceId       *string               `json:"deviceId,omitempty"`
+	Parameters     CommandParameters     `json:"parameters"`
+	Metadata       map[string]any        `json:"metadata,omitempty"`
+	Status         CommandStatus         `json:"status"`
+	DownlinkRetry  *DownlinkRetryOption  `json:"downlinkRetry,omitempty"`
+	ExecutionRetry *ExecutionRetryOption `json:"executionRetry,omitempty"`
+	CreatedAt      *time.Time            `json:"createdAt,omitempty"`
+	UpdatedAt      *time.Time            `json:"updatedAt,omitempty"`
+	ReceivedAt     *time.Time            `json:"receivedAt,omitempty"`
+	CompletedAt    *time.Time            `json:"completedAt,omitempty"`
+	FailedAt       *time.Time            `json:"failedAt,omitempty"`
 }
 
-type CommandRetryOption struct {
+type DownlinkRetryOption struct {
+	MaxRetries  *int       `json:"maxRetries,omitempty"`
+	RetryCount  *int       `json:"retryCount,omitempty"`
+	NextRetryAt *time.Time `json:"nextRetryAt,omitempty"`
+}
+
+type ExecutionRetryOption struct {
 	MaxRetries *int `json:"maxRetries,omitempty"`
 	RetryCount *int `json:"retryCount,omitempty"`
 }
