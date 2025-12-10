@@ -85,7 +85,7 @@ func (p Platform) fetch(ctx context.Context, method httpMethod, body io.Reader, 
 			return nil, fmt.Errorf("goplatform: ERR0: some error on %s %s", resp.Request.Method, resp.Request.URL)
 		}
 
-		var payload ResponseError
+		var payload responseError
 		if err := json.Unmarshal(b, &payload); err != nil {
 			return nil, fmt.Errorf("goplatform: ERR1: some error on %s %s", resp.Request.Method, resp.Request.URL)
 		}
@@ -103,7 +103,7 @@ func (p Platform) GetProjects(ctx context.Context) ([]Project, error) {
 		return nil, err
 	}
 
-	var projects Response[[]Project]
+	var projects response[[]Project]
 	if err := json.Unmarshal(b, &projects); err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func (p Platform) GetProject(ctx context.Context, uuid string) (Project, error) 
 		return zero, err
 	}
 
-	var project Response[Project]
+	var project response[Project]
 	if err := json.Unmarshal(b, &project); err != nil {
 		var zero Project
 		return zero, err

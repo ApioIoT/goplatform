@@ -24,7 +24,7 @@ func (p Project) GetNodes(ctx context.Context) ([]Node, error) {
 		return nil, err
 	}
 
-	var nodes Response[[]Node]
+	var nodes response[[]Node]
 	if err := json.Unmarshal(b, &nodes); err != nil {
 		return nil, err
 	}
@@ -37,13 +37,13 @@ func (p Project) GetNodes(ctx context.Context) ([]Node, error) {
 }
 
 func (p Project) GetNode(ctx context.Context, uuid string) (Node, error) {
-	var node Response[Node]
-
 	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "nodes", uuid)
 	if err != nil {
-		return node.Data, err
+		var zero Node
+		return zero, err
 	}
 
+	var node response[Node]
 	if err := json.Unmarshal(b, &node); err != nil {
 		return node.Data, err
 	}
@@ -59,7 +59,7 @@ func (p Project) GetDevices(ctx context.Context) ([]Device, error) {
 		return nil, err
 	}
 
-	var devices Response[[]Device]
+	var devices response[[]Device]
 	if err := json.Unmarshal(b, &devices); err != nil {
 		return nil, err
 	}
@@ -75,13 +75,13 @@ func (p Project) GetDevices(ctx context.Context) ([]Device, error) {
 }
 
 func (p Project) GetDevice(ctx context.Context, uuid string) (Device, error) {
-	var device Response[Device]
-
 	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "devices", uuid)
 	if err != nil {
-		return device.Data, err
+		var zero Device
+		return zero, err
 	}
 
+	var device response[Device]
 	if err := json.Unmarshal(b, &device); err != nil {
 		return device.Data, err
 	}
@@ -97,7 +97,7 @@ func (p Project) GetDeviceTypes(ctx context.Context) ([]DeviceType, error) {
 		return nil, err
 	}
 
-	var devices Response[[]DeviceType]
+	var devices response[[]DeviceType]
 	if err := json.Unmarshal(b, &devices); err != nil {
 		return nil, err
 	}
@@ -110,13 +110,13 @@ func (p Project) GetDeviceTypes(ctx context.Context) ([]DeviceType, error) {
 }
 
 func (p Project) GetDeviceType(ctx context.Context, uuid string) (DeviceType, error) {
-	var device Response[DeviceType]
-
 	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "devicetypes", uuid)
 	if err != nil {
-		return device.Data, err
+		var zero DeviceType
+		return zero, err
 	}
 
+	var device response[DeviceType]
 	if err := json.Unmarshal(b, &device); err != nil {
 		return device.Data, err
 	}
@@ -146,7 +146,7 @@ func (p Project) GetRules(ctx context.Context) ([]Rule, error) {
 		return nil, err
 	}
 
-	var rules Response[[]Rule]
+	var rules response[[]Rule]
 	if err := json.Unmarshal(b, &rules); err != nil {
 		return nil, err
 	}
@@ -159,13 +159,13 @@ func (p Project) GetRules(ctx context.Context) ([]Rule, error) {
 }
 
 func (p Project) GetRule(ctx context.Context, uuid string) (Rule, error) {
-	var rule Response[Rule]
-
 	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "rules", uuid)
 	if err != nil {
-		return rule.Data, err
+		var zero Rule
+		return zero, err
 	}
 
+	var rule response[Rule]
 	if err := json.Unmarshal(b, &rule); err != nil {
 		return rule.Data, err
 	}
@@ -173,4 +173,14 @@ func (p Project) GetRule(ctx context.Context, uuid string) (Rule, error) {
 	rule.Data.platformRef = p.platformRef
 
 	return rule.Data, nil
+}
+
+func (p Project) SendCommand(ctx context.Context, command Command) error {
+	b, err := json.Marshal(command)
+	if err != nil {
+		return err
+	}
+
+	_, err = p.platformRef.fetch(ctx, httpPost, bytes.NewReader(b), "projects", p.Uuid, "commands")
+	return err
 }

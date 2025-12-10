@@ -198,6 +198,15 @@ func TestUnit(t *testing.T) {
 		Type("application/json").
 		BodyString(string(devicetype))
 
+	commandUrl, _ := url.JoinPath("/projects", PROJECT_ID, "commands")
+	gock.New(API_URI).
+		AddMatcher(func(req *http.Request, ereq *gock.Request) (bool, error) {
+			return req.Method == "POST" && req.URL.Path == commandUrl, nil
+		}).
+		Persist().
+		MatchHeader("Authorization", fmt.Sprintf("apiKey %s", API_KEY)).
+		Reply(200)
+
 	// --- TESTS
 
 	t.Run("Invalid API Key", func(t *testing.T) {
@@ -514,6 +523,47 @@ func TestUnit(t *testing.T) {
 		}
 		if rule.Uuid != RULE_ID {
 			t.Fatalf("expected rule Uuid to be '%s', got '%s'", RULE_ID, rule.Uuid)
+		}
+	})
+
+	t.Run("Run Command", func(t *testing.T) {
+		ctx := context.Background()
+
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+
+		project, err := platform.GetProject(ctx, PROJECT_ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		deviceId := "my-device-id"
+		downlinkMaxRetris := 120
+		executionMaxRetris := 10
+
+		req := goplatform.CommandRequest{
+			Name:      "Sample",
+			ProjectId: "my-project-id",
+			DeviceId:  &deviceId,
+			Parameters: goplatform.CommandParameters{
+				goplatform.CommandParameter{
+					"address": 1,
+				},
+			},
+			DownlinkRetry: &goplatform.CommandRequestRetryOption{
+				MaxRetries: &downlinkMaxRetris,
+			},
+			ExecutionRetry: &goplatform.CommandRequestRetryOption{
+				MaxRetries: &executionMaxRetris,
+			},
+		}
+
+		command := req.MakeCommand()
+
+		if err := project.SendCommand(ctx, command); err != nil {
+			t.Fatal(err)
 		}
 	})
 }
