@@ -27,13 +27,13 @@ type Platform struct {
 	client *http.Client
 }
 
-type PlatformConfig struct {
+type Config struct {
 	Uri        string
 	ApiKey     string
 	SkipVerify bool
 }
 
-func New(config PlatformConfig) Platform {
+func New(config Config) Platform {
 	client := &http.Client{}
 
 	if config.SkipVerify {

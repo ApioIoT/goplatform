@@ -210,7 +210,7 @@ func TestUnit(t *testing.T) {
 	// --- TESTS
 
 	t.Run("Invalid API Key", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: "invalid-api-key",
 		})
@@ -221,7 +221,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("Empty API Key", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: "",
 		})
@@ -232,7 +232,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("Non-existent Project", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -243,7 +243,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("Non-existent Node", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -258,7 +258,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("Non-existent Device", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -273,7 +273,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("Non-existent DeviceType", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -288,7 +288,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("Non-existent Rule", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -304,7 +304,7 @@ func TestUnit(t *testing.T) {
 
 	t.Run("Context Cancellation", func(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -318,7 +318,7 @@ func TestUnit(t *testing.T) {
 	t.Run("Context Timeout", func(t *testing.T) {
 		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Nanosecond)
 		defer cancel()
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -329,7 +329,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetProjects", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -340,7 +340,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetProject", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -354,7 +354,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetNodes", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -375,7 +375,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetNode", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -393,7 +393,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetDevices", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -414,7 +414,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetDevice", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -432,7 +432,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetDeviceTypes", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -453,7 +453,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetDeviceType", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -477,7 +477,7 @@ func TestUnit(t *testing.T) {
 			Source:      "test/event",
 		}
 
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -493,7 +493,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetRules", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -509,7 +509,7 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetRule", func(t *testing.T) {
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})
@@ -529,7 +529,7 @@ func TestUnit(t *testing.T) {
 	t.Run("Run Command", func(t *testing.T) {
 		ctx := context.Background()
 
-		platform := goplatform.New(goplatform.PlatformConfig{
+		platform := goplatform.New(goplatform.Config{
 			Uri:    API_URI,
 			ApiKey: API_KEY,
 		})

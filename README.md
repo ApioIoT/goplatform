@@ -12,7 +12,7 @@ go get github.com/ApioIoT/goplatform/v2
 
 #### Get Projects
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
@@ -25,7 +25,7 @@ if err != nil {
 
 #### Get Project
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
@@ -38,7 +38,7 @@ if err != nil {
 
 #### Get Nodes
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
@@ -56,7 +56,7 @@ if err != nil {
 
 #### Get Node
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
@@ -74,7 +74,7 @@ if err != nil {
 
 #### Get Devices
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
@@ -92,7 +92,7 @@ if err != nil {
 
 #### Get Device
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
@@ -110,7 +110,7 @@ if err != nil {
 
 #### Get DeviceTypes
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
@@ -128,7 +128,7 @@ if err != nil {
 
 #### Get DeviceType
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
@@ -146,7 +146,7 @@ if err != nil {
 
 #### Create Event
 ```golang
-platform := goplatform.New(goplatform.PlatformConfig{
+platform := goplatform.New(goplatform.Config{
   Uri:    "platform-uri",
   ApiKey: "my-api-key",
 })
