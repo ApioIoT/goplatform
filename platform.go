@@ -4,10 +4,12 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/h2non/gock"
 )
@@ -33,6 +35,20 @@ type Config struct {
 	SkipVerify bool
 }
 
+func isTest() bool {
+	// Controlla se il flag "test.v" esiste e se contiene "true"
+	if flag.Lookup("test.v") != nil {
+		return true
+	}
+	// Alcuni runner di test settano os.Args con "test"
+	for _, arg := range flag.Args() {
+		if strings.HasPrefix(arg, "-test.") {
+			return true
+		}
+	}
+	return false
+}
+
 func New(config Config) Platform {
 	client := &http.Client{}
 
@@ -42,7 +58,9 @@ func New(config Config) Platform {
 		}
 	}
 
-	gock.InterceptClient(client) // For test
+	if isTest() {
+		gock.InterceptClient(client) // For test
+	}
 
 	return Platform{
 		uri:    config.Uri,
