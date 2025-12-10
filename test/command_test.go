@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/ApioIoT/goplatform"
+	"github.com/ApioIoT/goplatform/v2"
 )
 
 func TestCommand(t *testing.T) {

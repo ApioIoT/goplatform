@@ -1,4 +1,4 @@
-module github.com/ApioIoT/goplatform
+module github.com/ApioIoT/goplatform/v2
 
 go 1.23
 

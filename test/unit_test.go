@@ -10,7 +10,7 @@ import (
 
 	"os"
 
-	"github.com/ApioIoT/goplatform"
+	"github.com/ApioIoT/goplatform/v2"
 	"github.com/h2non/gock"
 )
 
