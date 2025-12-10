@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/h2non/gock"
 )
@@ -23,49 +22,58 @@ const (
 )
 
 type Platform struct {
-	uri        string
-	apiKey     string
-	skipVerify bool
-	ctx        context.Context
+	uri    string
+	apiKey string
+	client *http.Client
 }
 
-func New(ctx context.Context, uri, apiKey string) Platform {
+type PlatformConfig struct {
+	Uri        string
+	ApiKey     string
+	SkipVerify bool
+}
+
+func New(config PlatformConfig) Platform {
+	client := &http.Client{}
+
+	if config.SkipVerify {
+		client.Transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: config.SkipVerify},
+		}
+	}
+
+	gock.InterceptClient(client) // For test
+
 	return Platform{
-		uri:        uri,
-		apiKey:     apiKey,
-		skipVerify: false,
-		ctx:        ctx,
+		uri:    config.Uri,
+		apiKey: config.ApiKey,
+		client: client,
 	}
 }
 
-func (p *Platform) SetSkipVerify(value bool) {
-	p.skipVerify = value
-}
-
-func (p Platform) fetch(method httpMethod, body io.Reader, path ...string) ([]byte, error) {
-	u, err := url.JoinPath(p.uri, path...)
+func (p Platform) fetch(ctx context.Context, method httpMethod, body io.Reader, path ...string) ([]byte, error) {
+	baseUri, err := url.Parse(p.uri)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(p.ctx, strings.ToUpper(string(method)), u, body)
+	fullPath, err := url.JoinPath(baseUri.Path, path...)
 	if err != nil {
 		return nil, err
 	}
+	baseUri.Path = fullPath
+
+	req, err := http.NewRequestWithContext(ctx, string(method), baseUri.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
 	req.Header.Set("Content-Type", "application/json")
-
 	if p.apiKey != "" {
 		req.Header.Set("Authorization", fmt.Sprintf("apiKey %s", p.apiKey))
 	}
 
-	client := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: p.skipVerify},
-		},
-	}
-	gock.InterceptClient(client) // For test
-
-	resp, err := client.Do(req)
+	resp, err := p.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -89,8 +97,8 @@ func (p Platform) fetch(method httpMethod, body io.Reader, path ...string) ([]by
 	return b, err
 }
 
-func (p Platform) GetProjects() ([]Project, error) {
-	b, err := p.fetch(httpGet, nil, "projects")
+func (p Platform) GetProjects(ctx context.Context) ([]Project, error) {
+	b, err := p.fetch(ctx, httpGet, nil, "projects")
 	if err != nil {
 		return nil, err
 	}
@@ -107,8 +115,8 @@ func (p Platform) GetProjects() ([]Project, error) {
 	return projects.Data, nil
 }
 
-func (p Platform) GetProject(uuid string) (Project, error) {
-	b, err := p.fetch(httpGet, nil, "projects", uuid, "/")
+func (p Platform) GetProject(ctx context.Context, uuid string) (Project, error) {
+	b, err := p.fetch(ctx, httpGet, nil, "projects", uuid, "/")
 	if err != nil {
 		var zero Project
 		return zero, err

@@ -201,72 +201,93 @@ func TestUnit(t *testing.T) {
 	// --- TESTS
 
 	t.Run("Invalid API Key", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, "invalid-api-key")
-		_, err := platform.GetProjects()
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: "invalid-api-key",
+		})
+		_, err := platform.GetProjects(context.Background())
 		if err == nil {
 			t.Fatal("expected error with invalid API key")
 		}
 	})
 
 	t.Run("Empty API Key", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, "")
-		_, err := platform.GetProjects()
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: "",
+		})
+		_, err := platform.GetProjects(context.Background())
 		if err == nil {
 			t.Fatal("expected error with empty API key")
 		}
 	})
 
 	t.Run("Non-existent Project", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		_, err := platform.GetProject("non-existent-project")
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		_, err := platform.GetProject(context.Background(), "non-existent-project")
 		if err == nil {
 			t.Fatal("expected error for non-existent project")
 		}
 	})
 
 	t.Run("Non-existent Node", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-		_, err = project.GetNode("non-existent-node")
+		_, err = project.GetNode(context.Background(), "non-existent-node")
 		if err == nil {
 			t.Fatal("expected error for non-existent node")
 		}
 	})
 
 	t.Run("Non-existent Device", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-		_, err = project.GetDevice("non-existent-device")
+		_, err = project.GetDevice(context.Background(), "non-existent-device")
 		if err == nil {
 			t.Fatal("expected error for non-existent device")
 		}
 	})
 
 	t.Run("Non-existent DeviceType", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-		_, err = project.GetDeviceType("non-existent-devicetype")
+		_, err = project.GetDeviceType(context.Background(), "non-existent-devicetype")
 		if err == nil {
 			t.Fatal("expected error for non-existent device type")
 		}
 	})
 
 	t.Run("Non-existent Rule", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-		_, err = project.GetRule("non-existent-rule")
+		_, err = project.GetRule(context.Background(), "non-existent-rule")
 		if err == nil {
 			t.Fatal("expected error for non-existent rule")
 		}
@@ -274,9 +295,12 @@ func TestUnit(t *testing.T) {
 
 	t.Run("Context Cancellation", func(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
-		platform := goplatform.New(ctx, API_URI, API_KEY)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
 		cancel()
-		_, err := platform.GetProjects()
+		_, err := platform.GetProjects(ctx)
 		if err == nil {
 			t.Fatal("expected error due to cancelled context")
 		}
@@ -285,24 +309,33 @@ func TestUnit(t *testing.T) {
 	t.Run("Context Timeout", func(t *testing.T) {
 		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Nanosecond)
 		defer cancel()
-		platform := goplatform.New(ctx, API_URI, API_KEY)
-		_, err := platform.GetProjects()
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		_, err := platform.GetProjects(ctx)
 		if err == nil {
 			t.Fatal("expected error due to context timeout")
 		}
 	})
 
 	t.Run("GetProjects", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
 
-		if _, err := platform.GetProjects(); err != nil {
+		if _, err := platform.GetProjects(context.Background()); err != nil {
 			t.Fatal(err)
 		}
 	})
 
 	t.Run("GetProject", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -312,14 +345,17 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetNodes", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
 
-		project, err := platform.GetProject(PROJECT_ID)
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		nodes, err := project.GetNodes()
+		nodes, err := project.GetNodes(context.Background())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -330,12 +366,15 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetNode", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-		node, err := project.GetNode(NODE_ID)
+		node, err := project.GetNode(context.Background(), NODE_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -345,14 +384,17 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetDevices", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
 
-		project, err := platform.GetProject(PROJECT_ID)
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		devices, err := project.GetDevices()
+		devices, err := project.GetDevices(context.Background())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -363,12 +405,15 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetDevice", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-		device, err := project.GetDevice(DEVICE_ID)
+		device, err := project.GetDevice(context.Background(), DEVICE_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -378,14 +423,17 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetDeviceTypes", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
 
-		project, err := platform.GetProject(PROJECT_ID)
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		devices, err := project.GetDeviceTypes()
+		devices, err := project.GetDeviceTypes(context.Background())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -396,12 +444,15 @@ func TestUnit(t *testing.T) {
 	})
 
 	t.Run("GetDeviceType", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-		devicetype, err := project.GetDeviceType(DEVICE_TYPE_ID)
+		devicetype, err := project.GetDeviceType(context.Background(), DEVICE_TYPE_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -417,38 +468,47 @@ func TestUnit(t *testing.T) {
 			Source:      "test/event",
 		}
 
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
 
-		project, err := platform.GetProject(PROJECT_ID)
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if err := project.CreateEvent(event); err != nil {
+		if err := project.CreateEvent(context.Background(), event); err != nil {
 			t.Fatal(err)
 		}
 	})
 
 	t.Run("GetRules", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
 
-		project, err := platform.GetProject(PROJECT_ID)
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if _, err := project.GetRules(); err != nil {
+		if _, err := project.GetRules(context.Background()); err != nil {
 			t.Fatal(err)
 		}
 	})
 
 	t.Run("GetRule", func(t *testing.T) {
-		platform := goplatform.New(context.Background(), API_URI, API_KEY)
-		project, err := platform.GetProject(PROJECT_ID)
+		platform := goplatform.New(goplatform.PlatformConfig{
+			Uri:    API_URI,
+			ApiKey: API_KEY,
+		})
+		project, err := platform.GetProject(context.Background(), PROJECT_ID)
 		if err != nil {
 			t.Fatal(err)
 		}
-		rule, err := project.GetRule(RULE_ID)
+		rule, err := project.GetRule(context.Background(), RULE_ID)
 		if err != nil {
 			t.Fatal(err)
 		}

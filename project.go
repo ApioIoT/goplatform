@@ -2,6 +2,7 @@ package goplatform
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"time"
 )
@@ -17,8 +18,8 @@ type Project struct {
 	platformRef *Platform      `json:"-"`
 }
 
-func (p Project) GetNodes() ([]Node, error) {
-	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "nodes")
+func (p Project) GetNodes(ctx context.Context) ([]Node, error) {
+	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "nodes")
 	if err != nil {
 		return nil, err
 	}
@@ -35,10 +36,10 @@ func (p Project) GetNodes() ([]Node, error) {
 	return nodes.Data, nil
 }
 
-func (p Project) GetNode(uuid string) (Node, error) {
+func (p Project) GetNode(ctx context.Context, uuid string) (Node, error) {
 	var node Response[Node]
 
-	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "nodes", uuid)
+	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "nodes", uuid)
 	if err != nil {
 		return node.Data, err
 	}
@@ -52,8 +53,8 @@ func (p Project) GetNode(uuid string) (Node, error) {
 	return node.Data, nil
 }
 
-func (p Project) GetDevices() ([]Device, error) {
-	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "devices")
+func (p Project) GetDevices(ctx context.Context) ([]Device, error) {
+	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "devices")
 	if err != nil {
 		return nil, err
 	}
@@ -73,10 +74,10 @@ func (p Project) GetDevices() ([]Device, error) {
 	return devices.Data, nil
 }
 
-func (p Project) GetDevice(uuid string) (Device, error) {
+func (p Project) GetDevice(ctx context.Context, uuid string) (Device, error) {
 	var device Response[Device]
 
-	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "devices", uuid)
+	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "devices", uuid)
 	if err != nil {
 		return device.Data, err
 	}
@@ -90,8 +91,8 @@ func (p Project) GetDevice(uuid string) (Device, error) {
 	return device.Data, nil
 }
 
-func (p Project) GetDeviceTypes() ([]DeviceType, error) {
-	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "devicetypes")
+func (p Project) GetDeviceTypes(ctx context.Context) ([]DeviceType, error) {
+	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "devicetypes")
 	if err != nil {
 		return nil, err
 	}
@@ -108,10 +109,10 @@ func (p Project) GetDeviceTypes() ([]DeviceType, error) {
 	return devices.Data, nil
 }
 
-func (p Project) GetDeviceType(uuid string) (DeviceType, error) {
+func (p Project) GetDeviceType(ctx context.Context, uuid string) (DeviceType, error) {
 	var device Response[DeviceType]
 
-	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "devicetypes", uuid)
+	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "devicetypes", uuid)
 	if err != nil {
 		return device.Data, err
 	}
@@ -125,7 +126,7 @@ func (p Project) GetDeviceType(uuid string) (DeviceType, error) {
 	return device.Data, nil
 }
 
-func (p Project) CreateEvent(event Event) error {
+func (p Project) CreateEvent(ctx context.Context, event Event) error {
 	event.ProjectID = p.Uuid
 
 	b, err := json.Marshal(event)
@@ -135,12 +136,12 @@ func (p Project) CreateEvent(event Event) error {
 
 	body := bytes.NewReader(b)
 
-	_, err = p.platformRef.fetch(httpPost, body, "projects", p.Uuid, "events")
+	_, err = p.platformRef.fetch(ctx, httpPost, body, "projects", p.Uuid, "events")
 	return err
 }
 
-func (p Project) GetRules() ([]Rule, error) {
-	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "rules")
+func (p Project) GetRules(ctx context.Context) ([]Rule, error) {
+	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "rules")
 	if err != nil {
 		return nil, err
 	}
@@ -157,10 +158,10 @@ func (p Project) GetRules() ([]Rule, error) {
 	return rules.Data, nil
 }
 
-func (p Project) GetRule(uuid string) (Rule, error) {
+func (p Project) GetRule(ctx context.Context, uuid string) (Rule, error) {
 	var rule Response[Rule]
 
-	b, err := p.platformRef.fetch(httpGet, nil, "projects", p.Uuid, "rules", uuid)
+	b, err := p.platformRef.fetch(ctx, httpGet, nil, "projects", p.Uuid, "rules", uuid)
 	if err != nil {
 		return rule.Data, err
 	}

@@ -12,9 +12,12 @@ go get github.com/ApioIoT/goplatform
 
 #### Get Projects
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-projects, err := platform.GetProjects()
+projects, err := platform.GetProjects(context.TODO())
 if err != nil {
   panic(err)
 }
@@ -22,9 +25,12 @@ if err != nil {
 
 #### Get Project
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-project, err := platform.GetProject(PROJECT_ID)
+project, err := platform.GetProject(context.TODO(), "my-project-id")
 if err != nil {
   panic(err)
 }
@@ -32,14 +38,17 @@ if err != nil {
 
 #### Get Nodes
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-project, err := platform.GetProject(PROJECT_ID)
+project, err := platform.GetProject(context.TODO(), "my-project-id")
 if err != nil {
   panic(err)
 }
 
-nodes, err := project.GetNodes()
+nodes, err := project.GetNodes(context.TODO())
 if err != nil {
   panic(err)
 }
@@ -47,14 +56,17 @@ if err != nil {
 
 #### Get Node
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-project, err := platform.GetProject(PROJECT_ID)
+project, err := platform.GetProject(context.TODO(), "my-project-id")
 if err != nil {
   panic(err)
 }
 
-node, err := project.GetNode(NODE_ID)
+node, err := project.GetNode(context.TODO(), "my-node-id")
 if err != nil {
   panic(err)
 }
@@ -62,14 +74,17 @@ if err != nil {
 
 #### Get Devices
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-project, err := platform.GetProject(PROJECT_ID)
+project, err := platform.GetProject(context.TODO(), "my-project-id")
 if err != nil {
   panic(err)
 }
 
-devices, err := project.GetDevices()
+devices, err := project.GetDevices(context.TODO())
 if err != nil {
   panic(err)
 }
@@ -77,14 +92,17 @@ if err != nil {
 
 #### Get Device
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-project, err := platform.GetProject(PROJECT_ID)
+project, err := platform.GetProject(context.TODO(), "my-project-id")
 if err != nil {
   panic(err)
 }
 
-device, err := project.GetDevice(DEVICE_ID)
+device, err := project.GetDevice(context.TODO(), "my-device-id")
 if err != nil {
   panic(err)
 }
@@ -92,14 +110,17 @@ if err != nil {
 
 #### Get DeviceTypes
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-project, err := platform.GetProject(PROJECT_ID)
+project, err := platform.GetProject(context.TODO(), "my-project-id")
 if err != nil {
   panic(err)
 }
 
-devices, err := project.GetDeviceTypes()
+devices, err := project.GetDeviceTypes(context.TODO())
 if err != nil {
   panic(err)
 }
@@ -107,14 +128,17 @@ if err != nil {
 
 #### Get DeviceType
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-project, err := platform.GetProject(PROJECT_ID)
+project, err := platform.GetProject(context.TODO(), "my-project-id")
 if err != nil {
   panic(err)
 }
 
-deviceType, err := project.GetDeviceType(DEVICE_TYPE_ID)
+deviceType, err := project.GetDeviceType(context.TODO(), "my-device-type-id")
 if err != nil {
   panic(err)
 }
@@ -122,9 +146,12 @@ if err != nil {
 
 #### Create Event
 ```golang
-platform := goplatform.New(context.TODO(), URI, API_KEY)
+platform := goplatform.New(goplatform.PlatformConfig{
+  Uri:    "platform-uri",
+  ApiKey: "my-api-key",
+})
 
-project, err := platform.GetProject(PROJECT_ID)
+project, err := platform.GetProject(context.TODO(), "my-project-id")
 if err != nil {
   panic(err)
 }
@@ -135,7 +162,7 @@ event := goplatform.Event{
   Source:      "test/event",
 }
 
-if err := project.CreateEvent(event); err != nil {
+if err := project.CreateEvent(context.TODO(), event); err != nil {
   panic(err)
 }
 ```
