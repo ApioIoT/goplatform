@@ -7,7 +7,7 @@ An SDK for [Apio Platform](https://gitlab.com/apio-private/platform/api) in Gola
 
 #### Install
 ```bash
-go get github.com/ApioIoT/goplatform
+go get github.com/ApioIoT/goplatform/v2
 ```
 
 #### Get Projects
